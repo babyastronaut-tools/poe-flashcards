@@ -1,4 +1,4 @@
-const CACHE = "poe-flashcards-v1";
+const CACHE = "poe-flashcards-v2";
 const ASSETS = [
   "./",
   "./index.html",
