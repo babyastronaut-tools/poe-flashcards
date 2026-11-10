@@ -66,6 +66,7 @@
       padding: calc(12px + var(--safe-top)) 16px calc(16px + var(--safe-bottom));
       display: flex;
       flex-direction: column;
+      position: relative;
     }
 
     header.top {
@@ -112,10 +113,10 @@
       border: 0;
       background: transparent;
       border-radius: 16px;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       font-weight: 700;
       color: var(--muted);
-      padding: 8px 10px;
+      padding: 8px 8px;
     }
     .icon-btn:hover, .icon-btn:focus-visible { background: rgba(255,255,255,0.6); outline: none; }
 
@@ -309,7 +310,8 @@
       min-height: 1.6em;
       margin: 10px 0 0;
       font-weight: 800;
-      font-size: 1.1rem;
+      font-size: 1.05rem;
+      line-height: 1.3;
     }
     .feedback.ok { color: var(--ok); }
     .feedback.again { color: var(--miss); }
@@ -331,6 +333,7 @@
     }
     .key.wide-action { background: var(--teal); color: #fff; }
     .key.back { background: var(--sun-deep); font-size: 1.3rem; }
+    .key.ghost { background: transparent; box-shadow: none; pointer-events: none; }
     .flip-actions {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -372,19 +375,184 @@
     }
     .empty-note { color: var(--muted); font-weight: 650; margin: 0; }
 
-    .celebrate {
-      animation: pop 0.35s ease;
-    }
+    .celebrate { animation: pop 0.35s ease; }
     @keyframes pop {
       0% { transform: scale(0.92); }
       60% { transform: scale(1.04); }
       100% { transform: scale(1); }
+    }
+    @keyframes shake {
+      0%, 100% { transform: translateX(0); }
+      25% { transform: translateX(-8px); }
+      75% { transform: translateX(8px); }
+    }
+    @keyframes toast-in {
+      from { opacity: 0; transform: translate(-50%, -8px); }
+      to { opacity: 1; transform: translate(-50%, 0); }
+    }
+
+    .pin-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding-top: 8px;
+    }
+    .pin-dots {
+      display: flex;
+      gap: 14px;
+      margin: 18px 0 8px;
+    }
+    .pin-dots span {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      border: 3px solid var(--coral);
+      background: transparent;
+    }
+    .pin-dots span.filled { background: var(--coral); }
+    .pin-dots.shake { animation: shake 0.35s ease; }
+    .pin-error {
+      min-height: 1.4em;
+      color: var(--miss);
+      font-weight: 700;
+      margin: 0 0 8px;
+    }
+    #pinKeypad { width: 100%; max-width: 340px; }
+
+    .toast {
+      position: absolute;
+      left: 50%;
+      top: calc(58px + var(--safe-top));
+      transform: translate(-50%, 0);
+      width: calc(100% - 24px);
+      max-width: 400px;
+      background: var(--card);
+      color: var(--ink);
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 12px 14px 12px 16px;
+      display: none;
+      align-items: center;
+      gap: 10px;
+      z-index: 40;
+      font-weight: 800;
+      line-height: 1.3;
+      text-align: left;
+    }
+    .toast.show { display: flex; animation: toast-in 0.2s ease; }
+    .toast.streak {
+      background: var(--violet);
+      color: #fff;
+    }
+    .toast .deco {
+      font-size: 1.5rem;
+      flex-shrink: 0;
+    }
+    .toast p { margin: 0; }
+
+    .sticker-count {
+      text-align: center;
+      font-weight: 800;
+      margin: 4px 0 12px;
+      color: var(--muted);
+    }
+    .sticker-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+      padding-bottom: 8px;
+    }
+    .sticker-card {
+      background: var(--card);
+      border-radius: 20px;
+      box-shadow: var(--shadow);
+      padding: 14px 10px 12px;
+      text-align: center;
+      min-height: 150px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+    }
+    .sticker-card h3 {
+      margin: 0;
+      font-size: 0.92rem;
+      line-height: 1.2;
+    }
+    .sticker-card p {
+      margin: 0;
+      font-size: 0.75rem;
+      color: var(--muted);
+      font-weight: 650;
+      line-height: 1.3;
+    }
+    .badge {
+      width: 78px;
+      height: 78px;
+      border-radius: 22px;
+      display: grid;
+      place-items: center;
+      font-size: 2rem;
+      box-shadow: 0 5px 0 rgba(44, 42, 50, 0.12);
+      position: relative;
+      flex-shrink: 0;
+    }
+    .badge svg { width: 34px; height: 34px; display: block; }
+    .badge.locked {
+      background: #e7e0d4 !important;
+      filter: grayscale(1);
+      opacity: 0.55;
+      box-shadow: none;
+    }
+    .sticker-card.locked h3 { color: var(--muted); }
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(44, 42, 50, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      z-index: 60;
+    }
+    .modal.show { display: flex; }
+    .modal-card {
+      background: var(--card);
+      border-radius: 28px;
+      padding: 24px 18px 18px;
+      width: min(360px, 100%);
+      text-align: center;
+      box-shadow: var(--shadow);
+    }
+    .modal-card h2 { margin: 12px 0 4px; font-size: 1.4rem; }
+    .modal-card p { margin: 0 0 8px; font-weight: 700; }
+    .modal-arts {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 6px;
+    }
+
+    #confetti {
+      position: fixed;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 70;
+      display: none;
     }
 
     @media (max-height: 700px) {
       .card { min-height: 160px; padding: 16px; }
       .prompt { font-size: clamp(2.6rem, 14vw, 4rem); }
       .key { min-height: 56px; }
+      .badge { width: 68px; height: 68px; font-size: 1.7rem; }
     }
   </style>
 </head>
@@ -398,10 +566,22 @@
           <p class="sub" id="subtitle">Pick your tables and go</p>
         </div>
       </div>
+      <button type="button" class="icon-btn" id="stickersBtn" hidden>Stickers</button>
       <button type="button" class="icon-btn" id="backBtn" hidden>Setup</button>
     </header>
 
-    <section class="screen active" id="setupScreen" aria-label="Setup">
+    <section class="screen" id="pinScreen" aria-label="Secret code">
+      <div class="pin-wrap">
+        <p class="label">Secret code</p>
+        <div class="pin-dots" id="pinDots" aria-hidden="true">
+          <span></span><span></span><span></span><span></span>
+        </div>
+        <p class="pin-error" id="pinError">&nbsp;</p>
+        <div id="pinKeypad" class="keypad"></div>
+      </div>
+    </section>
+
+    <section class="screen" id="setupScreen" aria-label="Setup">
       <div class="panel">
         <div class="row">
           <p class="label">Tables</p>
@@ -431,6 +611,7 @@
       </div>
       <div class="actions">
         <button type="button" class="primary" id="startBtn">Start practice</button>
+        <button type="button" class="secondary" id="setupStickersBtn">My Stickers</button>
       </div>
     </section>
 
@@ -468,21 +649,178 @@
       <div class="actions">
         <button type="button" class="primary" id="playAgainBtn">Play again</button>
         <button type="button" class="secondary" id="missedOnlyBtn">Practice missed only</button>
+        <button type="button" class="secondary" id="endStickersBtn">My Stickers</button>
       </div>
     </section>
+
+    <section class="screen" id="stickerScreen" aria-label="My Stickers">
+      <p class="sticker-count" id="stickerCount">0 / 20 collected</p>
+      <div class="sticker-grid" id="stickerGrid"></div>
+    </section>
+
+    <div class="toast" id="cheerToast" role="status">
+      <span class="deco" id="cheerDeco" aria-hidden="true">★</span>
+      <p id="cheerText"></p>
+    </div>
   </div>
+  <div class="modal" id="unlockPop" role="dialog" aria-labelledby="unlockTitle">
+    <div class="modal-card">
+      <div class="modal-arts" id="unlockArts"></div>
+      <h2 id="unlockTitle">New sticker!</h2>
+      <p id="unlockName"></p>
+      <button type="button" class="primary" id="unlockOk">Yay!</button>
+    </div>
+  </div>
+  <canvas id="confetti"></canvas>
 
   <script>
     (function () {
       const SETTINGS_KEY = "poe-flashcards-settings";
       const TALLY_KEY = "poe-flashcards-needs-work";
+      const REWARDS_KEY = "poe-flashcards-rewards";
+      const PIN_KEY = "poe-flashcards-pin-ok";
+      const PIN_SALT = "poe-flashcards:";
+      const PIN_HASH = "74987bbf53d9877a5251d673c0cf1e17ac1a632eeac72bd1498ce2819c0df9aa";
       const DEFAULTS = { tables: [1,2,3,4,5,6,7,8,9,10], mode: "flip", round: 20, sound: false };
+
+      // Easy config: add an artist with cheers (correct) and encouragements (misses).
+      // Fan-voice song-title puns only. Never write messages as if the artists are speaking.
+      const FAVORITE_ARTISTS = [
+        {
+          id: "onedirection",
+          name: "One Direction",
+          cheers: [
+            "That's What Makes You Beautiful… nailed it!",
+            "Story of My Life: another right answer!",
+            "Best Song Ever? Best answer ever!",
+            "Live While We're Young — you crushed that!",
+            "One Thing's for sure: you got it!",
+            "Night Changes, but this answer stays right!",
+            "Perfect! Like the song, like that fact!",
+            "History in the making — yes!",
+            "You & I and that right answer. ✨",
+            "Up All Night practicing, and it shows!",
+            "Strong work. That was awesome!",
+            "Happily correct!",
+            "More Than This? You did more than enough!"
+          ],
+          encouragements: [
+            "Don't worry, you'll get it next time, Little Things count!",
+            "Through the Dark — you'll see this one again.",
+            "Ready to Run it back? You've got this.",
+            "Walking in the Wind: miss one, keep going.",
+            "Fireproof practice. This fact will stick.",
+            "More Than This try is coming. You're okay."
+          ]
+        },
+        {
+          id: "mattyb",
+          name: "Matty B",
+          cheers: [
+            "Never Too Young to get this one right!",
+            "You Make My Heart Skip — yes!",
+            "Hooked on You… and hooked on this fact!",
+            "Blue Skies ahead. That was great!",
+            "Turn Up the Track — you nailed it!",
+            "That's the Way to do it!",
+            "Crush on You getting these right. 💛",
+            "So Alive with that answer!",
+            "Back in Time? Nope — right on time!"
+          ],
+          encouragements: [
+            "Far Away? Not for long. You'll get it.",
+            "Be Right There — this fact will come back around.",
+            "Blue Skies are still coming. Try it again soon.",
+            "Never Too Young to take another shot."
+          ]
+        },
+        {
+          id: "kpopdemonhunters",
+          name: "KPop Demon Hunters",
+          cheers: [
+            "How It's Done? Just like that!",
+            "Golden! That answer shines!",
+            "Soda Pop fizz — you got it! ✨",
+            "Takedown! That fact didn't stand a chance.",
+            "Huntrix-level focus. Yes!"
+          ],
+          encouragements: [
+            "Even Huntrix miss a note sometimes. You'll get this.",
+            "Shake it off and hunt it again soon.",
+            "Not golden yet, but you're close. Try again soon.",
+            "How It's Done takes practice. You've got this."
+          ]
+        },
+        {
+          id: "tlc",
+          name: "TLC",
+          cheers: [
+            "Diggin' On You getting this right!",
+            "Baby-Baby-Baby, that's the one!",
+            "What About Your Friends? They'd cheer for that!",
+            "Fan-mail energy: another win!"
+          ],
+          encouragements: [
+            "No scrubs, just try again!",
+            "Don't go chasing the wrong number — this Waterfalls moment will pass!",
+            "What About Your Friends? This fact will be one soon.",
+            "Keep on, keep on. You'll get it next time."
+          ]
+        },
+        {
+          id: "katseye",
+          name: "KATSEYE",
+          cheers: [
+            "Touch — you got it!",
+            "That answer was gnarly! ⭐",
+            "Gabriela energy: main-character answer!",
+            "Debut vibes. What a hit!",
+            "My Way: you figured it out!",
+            "I'm Pretty sure that was perfect — it was!"
+          ],
+          encouragements: [
+            "Tonight I Might get it next time. You will too.",
+            "My Way isn't always a straight line. Try again!",
+            "Soft is strong. A miss won't stop you.",
+            "Shake it off and go again — still gnarly in a good way."
+          ]
+        }
+      ];
+
+      const TABLE_STICKERS = [
+        { id: "table-1", name: "One Thing", hint: "Master the 1s", emoji: "1️⃣", color: "#FF6B4A" },
+        { id: "table-2", name: "You & I", hint: "Master the 2s", emoji: "💞", color: "#7B6CFF" },
+        { id: "table-3", name: "Touch", hint: "Master the 3s", emoji: "✨", color: "#F06292" },
+        { id: "table-4", name: "Soda Pop", hint: "Master the 4s", emoji: "🥤", color: "#42A5F5" },
+        { id: "table-5", name: "That's the Way", hint: "Master the 5s", emoji: "🎤", color: "#2EB8A0" },
+        { id: "table-6", name: "Gabriela", hint: "Master the 6s", emoji: "🌟", color: "#AB47BC" },
+        { id: "table-7", name: "Blue Skies", hint: "Master the 7s", emoji: "🌤️", color: "#29B6F6" },
+        { id: "table-8", name: "Hooked on You", hint: "Master the 8s", emoji: "🎵", color: "#FF7043" },
+        { id: "table-9", name: "Perfect", hint: "Master the 9s", emoji: "💖", color: "#EC407A" },
+        { id: "table-10", name: "Waterfalls", hint: "Master the 10s", emoji: "💧", color: "#26A69A" }
+      ];
+
+      const STICKERS = [
+        { id: "first-note", name: "Never Too Young", hint: "Get your first answer right", emoji: "🎤", color: "#7B6CFF" },
+        { id: "streak-3", name: "How It's Done", hint: "Get 3 right in a row", emoji: "⚡", color: "#FF6B4A" },
+        { id: "streak-5", name: "Live While We're Young", hint: "Get 5 right in a row", emoji: "⭐", color: "#FFD166" },
+        { id: "streak-10", name: "Golden", hint: "Get 10 right in a row", emoji: "🥇", color: "#F5B700" },
+        { id: "perfect-round", name: "What Makes You Beautiful", hint: "Finish a perfect round", emoji: "💗", color: "#F06292" },
+        { id: "perfect-3", name: "Best Song Ever", hint: "Finish 3 perfect rounds", emoji: "🏆", color: "#7B6CFF" },
+        { id: "correct-10", name: "Up All Night", hint: "Get 10 answers right", emoji: "🌙", color: "#5C6BC0" },
+        { id: "correct-25", name: "Turn Up the Track", hint: "Get 25 answers right", emoji: "🎶", color: "#2EB8A0" },
+        { id: "correct-50", name: "Story of My Life", hint: "Get 50 answers right", emoji: "📖", color: "#FF7043" },
+        { id: "correct-100", name: "History", hint: "Get 100 answers right", emoji: "💫", color: "#8D6E63" }
+      ].concat(TABLE_STICKERS);
 
       const $ = (id) => document.getElementById(id);
       const setupScreen = $("setupScreen");
       const playScreen = $("playScreen");
       const endScreen = $("endScreen");
+      const pinScreen = $("pinScreen");
+      const stickerScreen = $("stickerScreen");
       const backBtn = $("backBtn");
+      const stickersBtn = $("stickersBtn");
       const subtitle = $("subtitle");
       const tableChips = $("tableChips");
       const startBtn = $("startBtn");
@@ -497,9 +835,13 @@
       const keypad = $("keypad");
       const progressBar = $("progressBar");
       const progressText = $("progressText");
+      const cheerToast = $("cheerToast");
+      const cheerText = $("cheerText");
+      const cheerDeco = $("cheerDeco");
 
       let settings = loadSettings();
       let tally = loadTally();
+      let rewards = loadRewards();
       let deck = [];
       let queue = [];
       let current = null;
@@ -511,6 +853,13 @@
       let total = 0;
       let done = 0;
       let audioCtx = null;
+      let currentStreak = 0;
+      let pinValue = "";
+      let pinBusy = false;
+      let stickerReturn = "setup";
+      let lastScreen = "setup";
+      let toastTimer = 0;
+      let unlockWaiter = null;
 
       function loadSettings() {
         try {
@@ -543,6 +892,29 @@
         localStorage.setItem(TALLY_KEY, JSON.stringify(tally));
       }
 
+      function emptyRewards() {
+        return { unlocked: {}, totalCorrect: 0, bestStreak: 0, perfectRounds: 0, masteredFacts: [] };
+      }
+
+      function loadRewards() {
+        try {
+          const raw = JSON.parse(localStorage.getItem(REWARDS_KEY)) || {};
+          return {
+            unlocked: raw.unlocked && typeof raw.unlocked === "object" ? raw.unlocked : {},
+            totalCorrect: Number(raw.totalCorrect) || 0,
+            bestStreak: Number(raw.bestStreak) || 0,
+            perfectRounds: Number(raw.perfectRounds) || 0,
+            masteredFacts: Array.isArray(raw.masteredFacts) ? raw.masteredFacts.slice() : []
+          };
+        } catch (e) {
+          return emptyRewards();
+        }
+      }
+
+      function saveRewards() {
+        localStorage.setItem(REWARDS_KEY, JSON.stringify(rewards));
+      }
+
       function factKey(card) { return card.a + "×" + card.b; }
       function factLabel(card) { return card.a + " × " + card.b; }
       function product(card) { return card.a * card.b; }
@@ -556,6 +928,25 @@
           arr[j] = tmp;
         }
         return arr;
+      }
+
+      function pick(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
+      }
+
+      function flattenLines(key) {
+        const lines = [];
+        FAVORITE_ARTISTS.forEach((artist) => {
+          (artist[key] || []).forEach((text) => lines.push(text));
+        });
+        return lines;
+      }
+
+      function pickCheer() { return pick(flattenLines("cheers")); }
+      function pickEncouragement() { return pick(flattenLines("encouragements")); }
+
+      function stickerById(id) {
+        return STICKERS.find((s) => s.id === id);
       }
 
       function buildFacts(tables) {
@@ -585,13 +976,21 @@
       }
 
       function showScreen(name) {
+        pinScreen.classList.toggle("active", name === "pin");
         setupScreen.classList.toggle("active", name === "setup");
         playScreen.classList.toggle("active", name === "play");
         endScreen.classList.toggle("active", name === "end");
-        backBtn.hidden = name === "setup";
+        stickerScreen.classList.toggle("active", name === "stickers");
+        backBtn.hidden = name === "setup" || name === "pin";
+        stickersBtn.hidden = name !== "setup";
+        backBtn.textContent = name === "stickers" ? "Back" : "Setup";
+        if (name === "pin") subtitle.textContent = "Enter the secret code";
         if (name === "setup") subtitle.textContent = "Pick your tables and go";
         if (name === "play") subtitle.textContent = settings.mode === "flip" ? "Flip cards" : "Type the answer";
         if (name === "end") subtitle.textContent = "Round complete";
+        if (name === "stickers") subtitle.textContent = "My Stickers";
+        if (name !== "pin" && name !== "stickers") lastScreen = name;
+        hideCheer();
       }
 
       function renderSetup() {
@@ -652,7 +1051,7 @@
         try {
           unlockAudio();
           const now = audioCtx.currentTime;
-          const notes = kind === "ok" ? [523.25, 659.25, 783.99] : [392.0, 329.63];
+          const notes = kind === "ok" ? [523.25, 659.25, 783.99] : kind === "unlock" ? [523.25, 659.25, 783.99, 1046.5] : [392.0, 329.63];
           notes.forEach((freq, i) => {
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
@@ -695,6 +1094,7 @@
         feedback.textContent = "";
         feedback.className = "feedback";
         flashCard.classList.remove("celebrate");
+        hideCheer();
         if (queue.length === 0) {
           finishRound();
           return;
@@ -726,6 +1126,7 @@
         const key = factKey(current);
         tally[key] = (tally[key] || 0) + 1;
         saveTally();
+        currentStreak = 0;
         if (!current.missed) {
           current.missed = true;
           if (!missedFacts.some((f) => f.a === current.a && f.b === current.b)) {
@@ -738,6 +1139,177 @@
         if (!current.missed) firstTryCorrect += 1;
         done += 1;
         updateProgress();
+      }
+
+      function unlockIfNeeded(ids) {
+        const fresh = [];
+        const now = new Date().toISOString();
+        ids.forEach((id) => {
+          if (id && !rewards.unlocked[id]) {
+            rewards.unlocked[id] = now;
+            fresh.push(id);
+          }
+        });
+        if (fresh.length) saveRewards();
+        return fresh;
+      }
+
+      function tableMastered(n) {
+        for (let b = 1; b <= 10; b++) {
+          if (rewards.masteredFacts.indexOf(n + "×" + b) === -1) return false;
+        }
+        return true;
+      }
+
+      function applyCorrectRewards() {
+        currentStreak += 1;
+        rewards.totalCorrect += 1;
+        if (currentStreak > rewards.bestStreak) rewards.bestStreak = currentStreak;
+        const key = factKey(current);
+        if (rewards.masteredFacts.indexOf(key) === -1) rewards.masteredFacts.push(key);
+        const ids = [];
+        if (rewards.totalCorrect >= 1) ids.push("first-note");
+        if (currentStreak >= 3) ids.push("streak-3");
+        if (currentStreak >= 5) ids.push("streak-5");
+        if (currentStreak >= 10) ids.push("streak-10");
+        if (rewards.totalCorrect >= 10) ids.push("correct-10");
+        if (rewards.totalCorrect >= 25) ids.push("correct-25");
+        if (rewards.totalCorrect >= 50) ids.push("correct-50");
+        if (rewards.totalCorrect >= 100) ids.push("correct-100");
+        if (tableMastered(current.a)) ids.push("table-" + current.a);
+        saveRewards();
+        return unlockIfNeeded(ids);
+      }
+
+      function streakLine(n) {
+        if (n === 3) return "3 in a row! That's How It's Done!";
+        if (n === 5) return "5 streak! Live While We're Young!";
+        if (n === 10) return "10 in a row — Golden!";
+        return n + " in a row. Keep the hits coming!";
+      }
+
+      function hideCheer() {
+        cheerToast.classList.remove("show", "streak");
+        if (toastTimer) clearTimeout(toastTimer);
+        toastTimer = 0;
+      }
+
+      function showCheer(text, special) {
+        hideCheer();
+        cheerText.textContent = text;
+        cheerDeco.textContent = special ? "🌟" : pick(["★", "♥", "🎤", "✨"]);
+        cheerToast.classList.toggle("streak", !!special);
+        cheerToast.classList.add("show");
+        toastTimer = setTimeout(hideCheer, special ? 1400 : 1000);
+      }
+
+      function makeBadge(sticker, locked) {
+        const el = document.createElement("div");
+        el.className = "badge" + (locked ? " locked" : "");
+        el.style.background = locked ? "" : sticker.color;
+        el.textContent = sticker.emoji;
+        el.setAttribute("aria-hidden", "true");
+        return el;
+      }
+
+      function burstConfetti() {
+        const canvas = $("confetti");
+        const ctx = canvas.getContext("2d");
+        const w = canvas.width = window.innerWidth;
+        const h = canvas.height = window.innerHeight;
+        const colors = ["#FF6B4A", "#2EB8A0", "#FFD166", "#7B6CFF", "#F06292", "#FFFFFF"];
+        const bits = [];
+        for (let i = 0; i < 90; i++) {
+          bits.push({
+            x: Math.random() * w,
+            y: -20 - Math.random() * h * 0.3,
+            s: 6 + Math.random() * 8,
+            vy: 3 + Math.random() * 5,
+            vx: -2 + Math.random() * 4,
+            rot: Math.random() * 6,
+            vr: -0.2 + Math.random() * 0.4,
+            color: colors[i % colors.length],
+            round: Math.random() > 0.5
+          });
+        }
+        canvas.style.display = "block";
+        const start = performance.now();
+        function frame(now) {
+          const t = now - start;
+          ctx.clearRect(0, 0, w, h);
+          bits.forEach((b) => {
+            b.x += b.vx;
+            b.y += b.vy;
+            b.rot += b.vr;
+            ctx.save();
+            ctx.translate(b.x, b.y);
+            ctx.rotate(b.rot);
+            ctx.fillStyle = b.color;
+            if (b.round) {
+              ctx.beginPath();
+              ctx.arc(0, 0, b.s / 2, 0, Math.PI * 2);
+              ctx.fill();
+            } else {
+              ctx.fillRect(-b.s / 2, -b.s / 3, b.s, b.s * 0.6);
+            }
+            ctx.restore();
+          });
+          if (t < 1600) requestAnimationFrame(frame);
+          else {
+            ctx.clearRect(0, 0, w, h);
+            canvas.style.display = "none";
+          }
+        }
+        requestAnimationFrame(frame);
+      }
+
+      function showUnlock(ids) {
+        return new Promise((resolve) => {
+          const names = ids.map((id) => (stickerById(id) || { name: id }).name);
+          $("unlockTitle").textContent = ids.length > 1 ? "New stickers!" : "New sticker!";
+          $("unlockName").textContent = names.join(" • ");
+          const arts = $("unlockArts");
+          arts.innerHTML = "";
+          ids.forEach((id) => {
+            const s = stickerById(id);
+            if (s) arts.appendChild(makeBadge(s, false));
+          });
+          $("unlockPop").classList.add("show");
+          burstConfetti();
+          playTone("unlock");
+          unlockWaiter = () => {
+            $("unlockPop").classList.remove("show");
+            unlockWaiter = null;
+            resolve();
+          };
+        });
+      }
+
+      $("unlockOk").addEventListener("click", () => {
+        if (unlockWaiter) unlockWaiter();
+      });
+
+      function afterCorrect(extra) {
+        const fresh = applyCorrectRewards();
+        markGotIt();
+        flashCard.classList.add("celebrate");
+        feedback.textContent = extra || "You got it!";
+        feedback.className = "feedback ok";
+        const special = currentStreak === 3 || currentStreak === 5 || currentStreak === 10;
+        if (fresh.length) {
+          showUnlock(fresh).then(nextCard);
+        } else {
+          showCheer(special ? streakLine(currentStreak) : pickCheer(), special);
+          setTimeout(nextCard, special ? 1300 : 950);
+        }
+      }
+
+      function afterMiss(extra) {
+        const line = pickEncouragement();
+        feedback.textContent = extra ? (extra + " " + line) : line;
+        feedback.className = "feedback again";
+        showCheer(line, false);
+        setTimeout(nextCard, extra ? 1400 : 1100);
       }
 
       flashCard.addEventListener("click", () => {
@@ -753,11 +1325,7 @@
         if (locked || !revealedOn) return;
         locked = true;
         playTone("ok");
-        markGotIt();
-        flashCard.classList.add("celebrate");
-        feedback.textContent = "You got it!";
-        feedback.className = "feedback ok";
-        setTimeout(nextCard, 420);
+        afterCorrect();
       });
 
       $("againBtn").addEventListener("click", () => {
@@ -766,9 +1334,7 @@
         playTone("again");
         markMissed();
         requeue(current);
-        feedback.textContent = "We'll try that one again soon.";
-        feedback.className = "feedback again";
-        setTimeout(nextCard, 550);
+        afterMiss();
       });
 
       function renderKeypad() {
@@ -815,32 +1381,33 @@
         locked = true;
         if (value === answer) {
           playTone("ok");
-          markGotIt();
-          flashCard.classList.add("celebrate");
-          feedback.textContent = "Yes! " + factLabel(current) + " = " + answer;
-          feedback.className = "feedback ok";
-          setTimeout(nextCard, 650);
+          afterCorrect("Yes! " + factLabel(current) + " = " + answer);
         } else {
           playTone("again");
           markMissed();
           requeue(current);
           typedEl.textContent = String(answer);
           typedEl.classList.remove("placeholder");
-          feedback.textContent = "It's " + answer + ". You'll see it again.";
-          feedback.className = "feedback again";
-          setTimeout(nextCard, 1100);
+          afterMiss("It's " + answer + ".");
         }
       }
 
       function finishRound() {
+        const perfect = total > 0 && firstTryCorrect === total;
+        if (perfect) {
+          rewards.perfectRounds += 1;
+          saveRewards();
+          const fresh = unlockIfNeeded(["perfect-round"].concat(rewards.perfectRounds >= 3 ? ["perfect-3"] : []));
+          if (fresh.length) showUnlock(fresh);
+        }
         showScreen("end");
         $("scoreBig").textContent = firstTryCorrect + " / " + total;
         const ratio = total ? firstTryCorrect / total : 1;
         let message = "Nice work, Poe!";
         if (total === 0) message = "Ready when you are.";
-        else if (firstTryCorrect === total) message = "Perfect round, Poe!";
-        else if (ratio >= 0.8) message = "Great practice, Poe!";
-        else message = "Good effort, Poe. A little more practice will help.";
+        else if (perfect) message = "What Makes You Beautiful — a perfect round!";
+        else if (ratio >= 0.8) message = "Great practice, Poe! How It's Done.";
+        else message = "Good effort, Poe. Little Things count.";
         $("scoreMessage").textContent = message;
 
         const list = $("missedList");
@@ -863,6 +1430,32 @@
         }
       }
 
+      function renderStickers() {
+        const got = STICKERS.filter((s) => rewards.unlocked[s.id]).length;
+        $("stickerCount").textContent = got + " / " + STICKERS.length + " collected";
+        const grid = $("stickerGrid");
+        grid.innerHTML = "";
+        STICKERS.forEach((s) => {
+          const locked = !rewards.unlocked[s.id];
+          const card = document.createElement("div");
+          card.className = "sticker-card" + (locked ? " locked" : "");
+          card.appendChild(makeBadge(s, locked));
+          const h = document.createElement("h3");
+          h.textContent = locked ? "???" : s.name;
+          const p = document.createElement("p");
+          p.textContent = locked ? s.hint : "Unlocked!";
+          card.appendChild(h);
+          card.appendChild(p);
+          grid.appendChild(card);
+        });
+      }
+
+      function openStickers(from) {
+        stickerReturn = from || lastScreen || "setup";
+        renderStickers();
+        showScreen("stickers");
+      }
+
       startBtn.addEventListener("click", () => {
         if (settings.sound) unlockAudio();
         startRound(buildFacts(settings.tables));
@@ -874,10 +1467,98 @@
         if (!missedFacts.length) return;
         startRound(missedFacts.slice(), "all");
       });
-      backBtn.addEventListener("click", () => showScreen("setup"));
+      backBtn.addEventListener("click", () => {
+        if (stickerScreen.classList.contains("active")) showScreen(stickerReturn || "setup");
+        else showScreen("setup");
+      });
+      stickersBtn.addEventListener("click", () => openStickers("setup"));
+      $("setupStickersBtn").addEventListener("click", () => openStickers("setup"));
+      $("endStickersBtn").addEventListener("click", () => openStickers("end"));
 
-      renderKeypad();
-      renderSetup();
+      async function hashPin(pin) {
+        const data = new TextEncoder().encode(PIN_SALT + pin);
+        const buf = await crypto.subtle.digest("SHA-256", data);
+        return Array.from(new Uint8Array(buf)).map((b) => b.toString(16).padStart(2, "0")).join("");
+      }
+
+      function isUnlocked() {
+        try { return localStorage.getItem(PIN_KEY) === PIN_HASH; }
+        catch (e) { return false; }
+      }
+
+      function renderPinDots() {
+        const dots = $("pinDots").querySelectorAll("span");
+        dots.forEach((dot, i) => dot.classList.toggle("filled", i < pinValue.length));
+      }
+
+      function renderPinKeypad() {
+        const box = $("pinKeypad");
+        box.innerHTML = "";
+        const keys = ["1","2","3","4","5","6","7","8","9","ghost","0","back"];
+        keys.forEach((k) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          if (k === "ghost") {
+            btn.className = "key ghost";
+            btn.tabIndex = -1;
+            btn.setAttribute("aria-hidden", "true");
+          } else if (k === "back") {
+            btn.className = "key back";
+            btn.textContent = "⌫";
+            btn.setAttribute("aria-label", "Backspace");
+            btn.addEventListener("click", () => onPinKey("back"));
+          } else {
+            btn.className = "key";
+            btn.textContent = k;
+            btn.addEventListener("click", () => onPinKey(k));
+          }
+          box.appendChild(btn);
+        });
+      }
+
+      async function onPinKey(k) {
+        if (pinBusy) return;
+        $("pinError").innerHTML = "&nbsp;";
+        if (k === "back") {
+          pinValue = pinValue.slice(0, -1);
+          renderPinDots();
+          return;
+        }
+        if (pinValue.length >= 4) return;
+        pinValue += k;
+        renderPinDots();
+        if (pinValue.length === 4) {
+          pinBusy = true;
+          try {
+            const hashed = await hashPin(pinValue);
+            if (hashed === PIN_HASH) {
+              localStorage.setItem(PIN_KEY, PIN_HASH);
+              enterApp();
+            } else {
+              $("pinError").textContent = "Not quite. Try again.";
+              $("pinDots").classList.remove("shake");
+              void $("pinDots").offsetWidth;
+              $("pinDots").classList.add("shake");
+              pinValue = "";
+              renderPinDots();
+            }
+          } catch (e) {
+            $("pinError").textContent = "Can't check the code offline in this browser.";
+          }
+          pinBusy = false;
+        }
+      }
+
+      function enterApp() {
+        renderKeypad();
+        renderSetup();
+        showScreen("setup");
+      }
+
+      renderPinKeypad();
+      renderPinDots();
+      if (isUnlocked()) enterApp();
+      else showScreen("pin");
 
       if ("serviceWorker" in navigator) {
         window.addEventListener("load", () => {
