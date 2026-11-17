@@ -998,6 +998,11 @@
       text-align: left;
       font-weight: 800;
     }
+    .qs-sticker { flex-direction: column; align-items: stretch; gap: 8px; }
+    .qs-sticker-row { display: flex; align-items: center; gap: 12px; }
+    .qs-sticker-strip { display: flex; justify-content: center; gap: 8px; flex-wrap: wrap; }
+    .qs-sticker { text-align: center; }
+    .qs-sticker-row { text-align: left; }
     .qs-sticker .badge { width: 58px; height: 58px; font-size: 1.6rem; border-radius: 16px; }
     .qs-sticker small { display: block; font-weight: 700; color: rgba(255, 255, 255, 0.7); }
     .qs-rules { list-style: none; padding: 0; margin: 4px 0 6px; text-align: left; font-weight: 700; line-height: 1.5; }
@@ -1086,7 +1091,21 @@
     .toast { background: #2d1b5e; color: #fff; border: 1px solid rgba(255, 120, 220, 0.5); }
     .toast.streak { background: linear-gradient(90deg, #ff2d6f, #8b3dff); }
     .sticker-card { background: rgba(36, 22, 77, 0.9); border: 1px solid rgba(255, 255, 255, 0.1); }
-    .badge.locked { background: rgba(255, 255, 255, 0.15) !important; }
+    .badge {
+      background: radial-gradient(circle at 50% 35%, #2f1d63 0%, #150a30 100%);
+      border: 3px solid var(--glow, #ff2d6f);
+      box-shadow: 0 0 16px var(--glow, #ff2d6f), inset 0 0 14px rgba(255, 255, 255, 0.08);
+      overflow: hidden;
+    }
+    .badge img { width: 100%; height: 100%; object-fit: cover; display: block; }
+    .badge.num {
+      font-size: 2.1rem;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 0 10px var(--glow, #ff2d6f), 0 0 22px var(--glow, #ff2d6f);
+    }
+    .badge.locked { background: rgba(255, 255, 255, 0.08) !important; border-color: rgba(255, 255, 255, 0.18); box-shadow: none; }
+    .badge.locked.num { text-shadow: none; }
     .modal { background: rgba(5, 2, 15, 0.7); }
     .modal-card { background: #24164d; color: #fff; border: 2px solid rgba(255, 120, 220, 0.5); box-shadow: 0 0 30px rgba(255, 45, 111, 0.4); }
     .fc-screen { background: linear-gradient(180deg, #1a0b3a 0%, #0d0820 100%); }
@@ -1306,6 +1325,8 @@
       const SETTINGS_KEY = "poe-flashcards-settings";
       const TALLY_KEY = "poe-flashcards-needs-work";
       const REWARDS_KEY = "poe-flashcards-rewards";
+      const STICKER_SCHEMA_KEY = "poe-flashcards-sticker-schema";
+      const STICKER_SCHEMA = 2; // v2 = neon demon-hunter sticker set
       const PIN_KEY = "poe-flashcards-pin-ok";
       const PIN_SALT = "poe-flashcards:";
       const PIN_HASH = "74987bbf53d9877a5251d673c0cf1e17ac1a632eeac72bd1498ce2819c0df9aa";
@@ -1415,30 +1436,33 @@
         }
       ];
 
-      const TABLE_STICKERS = [
-        { id: "table-1", name: "One Thing", hint: "Master the 1s", emoji: "1️⃣", color: "#FF6B4A" },
-        { id: "table-2", name: "You & I", hint: "Master the 2s", emoji: "💞", color: "#7B6CFF" },
-        { id: "table-3", name: "Touch", hint: "Master the 3s", emoji: "✨", color: "#F06292" },
-        { id: "table-4", name: "Soda Pop", hint: "Master the 4s", emoji: "🥤", color: "#42A5F5" },
-        { id: "table-5", name: "That's the Way", hint: "Master the 5s", emoji: "🎤", color: "#2EB8A0" },
-        { id: "table-6", name: "Gabriela", hint: "Master the 6s", emoji: "🌟", color: "#AB47BC" },
-        { id: "table-7", name: "Blue Skies", hint: "Master the 7s", emoji: "🌤️", color: "#29B6F6" },
-        { id: "table-8", name: "Hooked on You", hint: "Master the 8s", emoji: "🎵", color: "#FF7043" },
-        { id: "table-9", name: "Perfect", hint: "Master the 9s", emoji: "💖", color: "#EC407A" },
-        { id: "table-10", name: "Waterfalls", hint: "Master the 10s", emoji: "💧", color: "#26A69A" }
-      ];
+      // Original neon demon-hunter stickers (no movie characters).
+      // A sticker shows `img` (small art), `text` (neon number), or `emoji`.
+      const TABLE_NAMES = ["First Light", "Twin Beat", "Triple Spark", "Four-Count Fury", "High-Five Hit",
+        "Six-String Slash", "Lucky Seven", "Eight-Beat Echo", "Cloud Nine", "Perfect Ten"];
+      const TABLE_COLORS = ["#ff2d6f", "#8b3dff", "#4fe3ff", "#ffd166", "#7dffcf",
+        "#ff7ad9", "#5c8dff", "#ff9f1c", "#c13cff", "#2ee6a8"];
+      const TABLE_STICKERS = TABLE_NAMES.map((name, i) => ({
+        id: "table-" + (i + 1), name: name, hint: "Master the " + (i + 1) + "s", text: String(i + 1), color: TABLE_COLORS[i]
+      }));
 
       const STICKERS = [
-        { id: "first-note", name: "Never Too Young", hint: "Get your first answer right", emoji: "🎤", color: "#7B6CFF" },
-        { id: "streak-3", name: "How It's Done", hint: "Get 3 right in a row", emoji: "⚡", color: "#FF6B4A" },
-        { id: "streak-5", name: "Live While We're Young", hint: "Get 5 right in a row", emoji: "⭐", color: "#FFD166" },
-        { id: "streak-10", name: "Golden", hint: "Get 10 right in a row", emoji: "🥇", color: "#F5B700" },
-        { id: "perfect-round", name: "What Makes You Beautiful", hint: "Finish a perfect round", emoji: "💗", color: "#F06292" },
-        { id: "perfect-3", name: "Best Song Ever", hint: "Finish 3 perfect rounds", emoji: "🏆", color: "#7B6CFF" },
-        { id: "correct-10", name: "Up All Night", hint: "Get 10 answers right", emoji: "🌙", color: "#5C6BC0" },
-        { id: "correct-25", name: "Turn Up the Track", hint: "Get 25 answers right", emoji: "🎶", color: "#2EB8A0" },
-        { id: "correct-50", name: "Story of My Life", hint: "Get 50 answers right", emoji: "📖", color: "#FF7043" },
-        { id: "correct-100", name: "History", hint: "Get 100 answers right", emoji: "💫", color: "#8D6E63" }
+        { id: "first-note", name: "Mic Check", hint: "Get your first answer right", emoji: "🎤", color: "#ff2d6f" },
+        { id: "streak-3", name: "Spark Strike", hint: "Get 3 right in a row", emoji: "⚡", color: "#ffd166" },
+        { id: "streak-5", name: "Neon Combo", hint: "Get 5 right in a row", emoji: "💥", color: "#ff9f1c" },
+        { id: "streak-10", name: "Golden Voice", hint: "Get 10 right in a row", emoji: "🌟", color: "#ffd166" },
+        { id: "perfect-round", name: "Flawless Set", hint: "Finish a perfect practice round", emoji: "💎", color: "#4fe3ff" },
+        { id: "perfect-3", name: "Triple Encore", hint: "Finish 3 perfect practice rounds", emoji: "🏆", color: "#ffd166" },
+        { id: "correct-10", name: "Rookie Hunter", hint: "Get 10 answers right", emoji: "🗡️", color: "#8b3dff" },
+        { id: "correct-25", name: "Note Shield", hint: "Get 25 answers right", emoji: "🛡️", color: "#4fe3ff" },
+        { id: "correct-50", name: "Spotlight Star", hint: "Get 50 answers right", emoji: "🔦", color: "#ff7ad9" },
+        { id: "correct-100", name: "Stage Legend", hint: "Get 100 answers right", emoji: "👑", color: "#ffd166" },
+        { id: "divide-10", name: "Split Strike", hint: "Get 10 division answers right", emoji: "➗", color: "#7dffcf" },
+        { id: "quest-win", name: "Hushfang Defeated", hint: "Win your first Demon Hunter Quest", img: "art/sticker-hushfang.webp", emoji: "😵‍💫", color: "#c13cff" },
+        { id: "quest-3star", name: "Three-Star Hunt", hint: "Win a quest with 3 stars", emoji: "⭐", color: "#ffd166" },
+        { id: "quest-potion", name: "Potion Brewer", hint: "Earn a healing potion in a quest", emoji: "🧪", color: "#2ee6a8" },
+        { id: "quest-crit4", name: "Critical Storm", hint: "Win a quest with 4 critical hits", emoji: "🌩️", color: "#4fe3ff" },
+        { id: "quest-wins-5", name: "Hunter Badge", hint: "Win 5 quests", img: "art/hunter-face.webp", emoji: "🏅", color: "#ff2d6f" }
       ].concat(TABLE_STICKERS);
 
       const $ = (id) => document.getElementById(id);
@@ -1468,6 +1492,7 @@
 
       let settings = loadSettings();
       let tally = loadTally();
+      migrateStickers();
       let rewards = loadRewards();
       let deck = [];
       let queue = [];
@@ -1520,8 +1545,18 @@
         localStorage.setItem(TALLY_KEY, JSON.stringify(tally));
       }
 
+      // One-time reset when the sticker set changes: clears earned stickers and
+      // sticker-progress counters only. Settings, PIN, and missed-fact history are untouched.
+      function migrateStickers() {
+        try {
+          if (Number(localStorage.getItem(STICKER_SCHEMA_KEY)) >= STICKER_SCHEMA) return;
+          localStorage.removeItem(REWARDS_KEY);
+          localStorage.setItem(STICKER_SCHEMA_KEY, String(STICKER_SCHEMA));
+        } catch (e) {}
+      }
+
       function emptyRewards() {
-        return { unlocked: {}, totalCorrect: 0, bestStreak: 0, perfectRounds: 0, masteredFacts: [] };
+        return { unlocked: {}, totalCorrect: 0, bestStreak: 0, perfectRounds: 0, masteredFacts: [], divCorrect: 0, questWins: 0 };
       }
 
       function loadRewards() {
@@ -1532,7 +1567,9 @@
             totalCorrect: Number(raw.totalCorrect) || 0,
             bestStreak: Number(raw.bestStreak) || 0,
             perfectRounds: Number(raw.perfectRounds) || 0,
-            masteredFacts: Array.isArray(raw.masteredFacts) ? raw.masteredFacts.slice() : []
+            masteredFacts: Array.isArray(raw.masteredFacts) ? raw.masteredFacts.slice() : [],
+            divCorrect: Number(raw.divCorrect) || 0,
+            questWins: Number(raw.questWins) || 0
           };
         } catch (e) {
           return emptyRewards();
@@ -1829,6 +1866,10 @@
         if (rewards.totalCorrect >= 25) ids.push("correct-25");
         if (rewards.totalCorrect >= 50) ids.push("correct-50");
         if (rewards.totalCorrect >= 100) ids.push("correct-100");
+        if (isDiv(current)) {
+          rewards.divCorrect += 1;
+          if (rewards.divCorrect >= 10) ids.push("divide-10");
+        }
         if (!isDiv(current) && tableMastered(current.a)) ids.push("table-" + current.a);
         saveRewards();
         return unlockIfNeeded(ids);
@@ -1859,8 +1900,18 @@
       function makeBadge(sticker, locked) {
         const el = document.createElement("div");
         el.className = "badge" + (locked ? " locked" : "");
-        el.style.background = locked ? "" : sticker.color;
-        el.textContent = sticker.emoji;
+        el.style.setProperty("--glow", sticker.color);
+        if (sticker.img && !locked) {
+          const img = document.createElement("img");
+          img.src = sticker.img;
+          img.alt = "";
+          el.appendChild(img);
+        } else if (sticker.text) {
+          el.classList.add("num");
+          el.textContent = sticker.text;
+        } else {
+          el.textContent = sticker.emoji || "❓";
+        }
         el.setAttribute("aria-hidden", "true");
         return el;
       }
@@ -2282,7 +2333,7 @@
         const pool = shuffle(buildFacts(settings.tables));
         let questions = [];
         while (questions.length < QUEST_LEN && pool.length) questions = questions.concat(pool.slice(0, QUEST_LEN - questions.length));
-        qs = { questions: questions, i: 0, hp: DEMON_HP, hearts: MAX_HEARTS, potions: 0, critChain: 0, correct: 0, answered: 0, crits: 0, locked: true, startT: 0, over: false };
+        qs = { questions: questions, i: 0, hp: DEMON_HP, hearts: MAX_HEARTS, potions: 0, potionsEarned: 0, critChain: 0, correct: 0, answered: 0, crits: 0, locked: true, startT: 0, over: false };
         $("qsIntro").hidden = true;
         $("qsEnd").hidden = true;
         $("qsDemon").className = "qs-demon";
@@ -2428,6 +2479,7 @@
         $("qsFlash").className = "qs-flash";
         retrigger($("qsFlash"), "heal");
         playTone("potion");
+        qs.potionsEarned += 1;
         if (qs.hearts < MAX_HEARTS) {
           qs.hearts += 1;
           renderHearts(qs.hearts - 1);
@@ -2439,12 +2491,22 @@
         renderChain();
       }
 
-      function awardQuestSticker() {
-        const pool = STICKERS.filter((st) => st.id.indexOf("table-") !== 0 && !rewards.unlocked[st.id]);
-        if (!pool.length) return null;
-        const st = pick(pool);
-        unlockIfNeeded([st.id]);
-        return st;
+      // Every win unlocks the quest stickers it earned. If none are new, it awards
+      // a random still-locked non-table sticker so a win always pays out while any remain.
+      function awardQuestStickers(stars) {
+        rewards.questWins += 1;
+        saveRewards();
+        const ids = ["quest-win"];
+        if (stars === 3) ids.push("quest-3star");
+        if (qs.potionsEarned > 0) ids.push("quest-potion");
+        if (qs.crits >= 4) ids.push("quest-crit4");
+        if (rewards.questWins >= 5) ids.push("quest-wins-5");
+        let fresh = unlockIfNeeded(ids);
+        if (!fresh.length) {
+          const pool = STICKERS.filter((st) => st.id.indexOf("table-") !== 0 && !rewards.unlocked[st.id]);
+          if (pool.length) fresh = unlockIfNeeded([pick(pool).id]);
+        }
+        return fresh.map(stickerById).filter(Boolean);
       }
 
       function endQuest(won) {
@@ -2461,7 +2523,7 @@
           playTone("win");
           const accuracy = qs.answered ? qs.correct / qs.answered : 0;
           const stars = accuracy >= 0.9 ? 3 : accuracy >= 0.7 ? 2 : 1;
-          const st = awardQuestSticker();
+          const won = awardQuestStickers(stars);
           later(() => {
             $("qsEndArt").src = "art/demon-defeated.webp";
             $("qsEndArt").alt = "Hushfang defeated, the music is free";
@@ -2470,14 +2532,27 @@
             $("qsStars").querySelectorAll("span").forEach((el, i) => el.classList.toggle("on", i < stars));
             $("qsStars").setAttribute("aria-label", stars + " of 3 stars");
             $("qsEndMsg").textContent = "The music is back! " + qs.correct + " of " + qs.answered + " right, " + qs.crits + " critical hit" + (qs.crits === 1 ? "" : "s") + ". Golden!";
-            if (st) {
-              stickerBox.appendChild(makeBadge(st, false));
+            if (won.length > 2) {
+              const strip = document.createElement("div");
+              strip.className = "qs-sticker-strip";
+              won.forEach((st) => strip.appendChild(makeBadge(st, false)));
+              const t = document.createElement("div");
+              t.innerHTML = "<small>" + won.length + " new stickers!</small>";
+              t.appendChild(document.createTextNode(won.map((st) => st.name).join(" • ")));
+              stickerBox.appendChild(strip);
+              stickerBox.appendChild(t);
+            }
+            else won.forEach((st) => {
+              const row = document.createElement("div");
+              row.className = "qs-sticker-row";
+              row.appendChild(makeBadge(st, false));
               const t = document.createElement("div");
               t.innerHTML = "<small>New sticker!</small>";
               t.appendChild(document.createTextNode(st.name));
-              stickerBox.appendChild(t);
-              stickerBox.hidden = false;
-            }
+              row.appendChild(t);
+              stickerBox.appendChild(row);
+            });
+            stickerBox.hidden = won.length === 0;
             $("qsRematch").textContent = "Hunt again!";
             panel.hidden = false;
             burstConfetti();
