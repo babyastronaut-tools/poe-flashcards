@@ -3,11 +3,11 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#FF6B4A">
+  <meta name="theme-color" content="#1a0b3a">
   <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Poe Math">
-  <meta name="description" content="Simple multiplication flashcards for Presley.">
+  <meta name="description" content="Simple multiplication and division flashcards for Presley.">
   <link rel="manifest" href="manifest.webmanifest">
   <link rel="icon" href="icon-192.png" type="image/png">
   <link rel="apple-touch-icon" href="icon-192.png">
@@ -554,6 +554,555 @@
       .key { min-height: 56px; }
       .badge { width: 68px; height: 68px; font-size: 1.7rem; }
     }
+
+    [hidden] { display: none !important; }
+    .setup-note {
+      margin: 0;
+      color: var(--muted);
+      font-weight: 700;
+      font-size: 0.95rem;
+    }
+
+    /* ---------- Full-screen flip cards ---------- */
+    .fc-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      background: var(--sun);
+      display: flex;
+      align-items: stretch;
+      justify-content: center;
+      padding: calc(14px + var(--safe-top)) 14px calc(14px + var(--safe-bottom));
+    }
+    .fc-exit {
+      position: absolute;
+      top: calc(6px + var(--safe-top));
+      right: 6px;
+      width: 44px;
+      height: 44px;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      color: rgba(44, 42, 50, 0.35);
+      font-size: 1.6rem;
+      font-weight: 700;
+      line-height: 1;
+      z-index: 3;
+    }
+    .fc-card {
+      flex: 1;
+      max-width: 620px;
+      border: 0;
+      padding: 0;
+      background: transparent;
+      perspective: 1600px;
+      display: block;
+    }
+    .fc-card.deal { animation: deal 0.28s ease-out; }
+    @keyframes deal {
+      from { transform: translateX(28px) rotate(1.5deg); opacity: 0.2; }
+      to { transform: none; opacity: 1; }
+    }
+    .fc-inner {
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transform-style: preserve-3d;
+      transition: transform 0.6s cubic-bezier(0.3, 0.75, 0.3, 1);
+    }
+    .fc-inner.no-anim { transition: none; }
+    .fc-card.flipped .fc-inner { transform: rotateY(180deg); }
+    .fc-face {
+      position: absolute;
+      inset: 0;
+      border-radius: 30px;
+      backface-visibility: hidden;
+      -webkit-backface-visibility: hidden;
+      display: flex;
+      flex-wrap: wrap;
+      align-content: center;
+      align-items: center;
+      justify-content: center;
+      column-gap: 0.28em;
+      text-align: center;
+      font-weight: 800;
+      letter-spacing: -0.03em;
+      line-height: 1.1;
+      padding: 20px;
+      box-shadow: 0 14px 34px rgba(44, 42, 50, 0.18);
+    }
+    .fc-face span { white-space: nowrap; }
+    .fc-front {
+      background:
+        linear-gradient(to bottom, transparent 0, transparent 70px, rgba(232, 85, 54, 0.45) 70px, rgba(232, 85, 54, 0.45) 73px, transparent 73px),
+        repeating-linear-gradient(to bottom, #fff 0, #fff 41px, rgba(66, 165, 245, 0.18) 41px, rgba(66, 165, 245, 0.18) 43px);
+      background-color: #fff;
+      color: #2c2a32;
+      font-size: clamp(4rem, 25vw, 9rem);
+    }
+    .fc-back {
+      transform: rotateY(180deg);
+      background: linear-gradient(160deg, var(--teal) 0%, #1f9c88 100%);
+      color: #fff;
+      font-size: clamp(3rem, 17vw, 7rem);
+    }
+    .fc-done {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      background: var(--sun);
+    }
+    .fc-done h2 { font-size: 2rem; margin: 0 0 8px; }
+    .fc-done p { margin: 0 0 12px; font-weight: 700; color: var(--muted); }
+    .fc-done .primary, .fc-done .secondary { max-width: 360px; }
+
+    /* ---------- Demon Hunter Quest ---------- */
+    .qs {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      color: #fff;
+      background:
+        radial-gradient(circle at 15% 0%, rgba(255, 64, 160, 0.35), transparent 45%),
+        radial-gradient(circle at 90% 10%, rgba(64, 200, 255, 0.28), transparent 45%),
+        linear-gradient(180deg, #1a0b3a 0%, #0d0820 100%);
+      display: flex;
+      flex-direction: column;
+      padding: calc(8px + var(--safe-top)) 14px calc(12px + var(--safe-bottom));
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+    .qs.hurt { animation: shake 0.35s ease; }
+    .qs-wrap {
+      flex: 1;
+      width: 100%;
+      max-width: 460px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      min-height: 0;
+    }
+    .qs-top {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      min-height: 44px;
+    }
+    .qs-hearts { display: flex; gap: 2px; font-size: 1.55rem; line-height: 1; }
+    .qs-hearts span { transition: transform 0.2s ease, filter 0.2s ease, opacity 0.2s ease; filter: drop-shadow(0 0 6px rgba(255, 70, 120, 0.8)); }
+    .qs-hearts span.lost { filter: grayscale(1); opacity: 0.3; transform: scale(0.85); }
+    .qs-hearts span.pop { animation: pop 0.45s ease; }
+    .qs-chain {
+      display: flex;
+      align-items: center;
+      gap: 3px;
+      margin-left: 6px;
+      padding: 4px 8px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.08);
+      font-size: 0.9rem;
+    }
+    .qs-chain i { font-style: normal; opacity: 0.25; filter: grayscale(1); }
+    .qs-chain i.on { opacity: 1; filter: drop-shadow(0 0 5px #ffd166); }
+    .qs-chain b { margin-left: 2px; font-size: 1rem; opacity: 0.35; }
+    .qs-chain b.have { opacity: 1; filter: drop-shadow(0 0 6px #6dfcc0); animation: pop 0.45s ease; }
+    .qs-count { margin-left: auto; font-weight: 800; color: rgba(255, 255, 255, 0.75); }
+    .qs-exit {
+      width: 44px;
+      height: 44px;
+      border: 0;
+      border-radius: 50%;
+      background: transparent;
+      color: rgba(255, 255, 255, 0.45);
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+    .qs-arena {
+      flex: 1;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+    }
+    .qs-demon {
+      position: relative;
+      height: clamp(120px, 30vh, 270px);
+      aspect-ratio: 1;
+      border-radius: 26px;
+      overflow: visible;
+    }
+    .qs-demon img {
+      width: 100%;
+      height: 100%;
+      border-radius: 26px;
+      display: block;
+      box-shadow: 0 0 0 3px rgba(255, 90, 200, 0.7), 0 0 28px rgba(200, 80, 255, 0.65);
+      animation: hover 3s ease-in-out infinite;
+    }
+    @keyframes hover {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-6px); }
+    }
+    .qs-demon.hit img { animation: demon-hit 0.4s ease; }
+    .qs-demon.crit img { animation: demon-crit 0.6s ease; }
+    @keyframes demon-hit {
+      0% { transform: translateX(0); filter: brightness(1); }
+      25% { transform: translateX(-10px); filter: brightness(2.2); }
+      60% { transform: translateX(8px); }
+      100% { transform: translateX(0); filter: brightness(1); }
+    }
+    @keyframes demon-crit {
+      0% { transform: scale(1); filter: brightness(1); }
+      20% { transform: scale(0.88) rotate(-6deg); filter: brightness(3) hue-rotate(40deg); }
+      45% { transform: scale(1.06) rotate(5deg); }
+      70% { transform: translateX(-8px); }
+      100% { transform: none; filter: brightness(1); }
+    }
+    .qs-demon.attack img { animation: demon-attack 0.45s ease; }
+    @keyframes demon-attack {
+      0% { transform: scale(1); }
+      40% { transform: scale(1.18) translateY(14px); filter: drop-shadow(0 0 20px #ff2d6f); }
+      100% { transform: scale(1); }
+    }
+    .qs-demon.defeated img { animation: demon-out 0.9s ease forwards; }
+    @keyframes demon-out {
+      0% { transform: scale(1); opacity: 1; filter: brightness(1); }
+      30% { transform: scale(1.1) rotate(-8deg); filter: brightness(3); }
+      100% { transform: scale(0.2) rotate(30deg); opacity: 0; filter: brightness(4) blur(4px); }
+    }
+    .qs-dmg {
+      position: absolute;
+      left: 50%;
+      top: 30%;
+      transform: translate(-50%, 0);
+      font-size: 2.6rem;
+      font-weight: 900;
+      color: #fff;
+      text-shadow: 0 0 10px #ff4fa3, 0 3px 0 #7a1fff;
+      pointer-events: none;
+      opacity: 0;
+    }
+    .qs-dmg.show { animation: dmg-float 0.9s ease-out; }
+    .qs-dmg.big { font-size: 3.6rem; color: #ffe066; text-shadow: 0 0 14px #ffb300, 0 3px 0 #b5179e; }
+    @keyframes dmg-float {
+      0% { opacity: 0; transform: translate(-50%, 10px) scale(0.6); }
+      20% { opacity: 1; transform: translate(-50%, 0) scale(1.2); }
+      100% { opacity: 0; transform: translate(-50%, -50px) scale(1); }
+    }
+    .qs-name {
+      margin-top: 8px;
+      font-weight: 800;
+      font-size: 0.95rem;
+      letter-spacing: 0.04em;
+      color: #ffb3e6;
+      text-shadow: 0 0 8px rgba(255, 80, 200, 0.7);
+    }
+    .qs-hp {
+      width: min(280px, 80%);
+      height: 14px;
+      margin-top: 6px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      border: 2px solid rgba(255, 120, 220, 0.6);
+      overflow: hidden;
+    }
+    .qs-hp span {
+      display: block;
+      height: 100%;
+      width: 100%;
+      background: linear-gradient(90deg, #ff2d6f, #c13cff);
+      box-shadow: 0 0 10px #ff2d6f;
+      transition: width 0.45s ease;
+    }
+    .qs-qbox {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 10px;
+    }
+    .qs-hunter {
+      width: 58px;
+      height: 58px;
+      border-radius: 50%;
+      object-fit: cover;
+      box-shadow: 0 0 0 3px #4fe3ff, 0 0 18px rgba(79, 227, 255, 0.7);
+      flex-shrink: 0;
+    }
+    .qs-prompt {
+      font-size: clamp(2.8rem, 15vw, 4.2rem);
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      line-height: 1;
+      text-shadow: 0 0 14px rgba(120, 220, 255, 0.75);
+    }
+    .qs-timer {
+      height: 8px;
+      margin: 12px auto 0;
+      width: min(300px, 86%);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      overflow: hidden;
+    }
+    .qs-timer span {
+      display: block;
+      height: 100%;
+      width: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #ffd166, #ff9f1c);
+      box-shadow: 0 0 10px #ffd166;
+    }
+    .qs-timer.run span { width: 0%; transition: width 3s linear; }
+    .qs-timer.expired span { opacity: 0; }
+    .qs-msg {
+      min-height: 2.6em;
+      margin: 8px 0 4px;
+      text-align: center;
+      font-weight: 800;
+      font-size: 1.02rem;
+      line-height: 1.3;
+    }
+    .qs-msg.good { color: #7dffcf; }
+    .qs-msg.crit { color: #ffe066; text-shadow: 0 0 10px rgba(255, 200, 0, 0.7); }
+    .qs-msg.bad { color: #ff9db8; }
+    .qs-answers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+    .qs-ans {
+      min-height: clamp(66px, 10.5vh, 92px);
+      border-radius: 20px;
+      border: 2px solid rgba(255, 120, 220, 0.75);
+      background: rgba(255, 255, 255, 0.08);
+      color: #fff;
+      font-size: clamp(1.9rem, 9vw, 2.5rem);
+      font-weight: 900;
+      box-shadow: 0 0 14px rgba(200, 80, 255, 0.35), inset 0 0 12px rgba(255, 255, 255, 0.06);
+      touch-action: manipulation;
+    }
+    .qs-ans:nth-child(2n) { border-color: rgba(79, 227, 255, 0.8); box-shadow: 0 0 14px rgba(79, 227, 255, 0.3); }
+    .qs-ans:active:not(:disabled) { transform: scale(0.97); }
+    .qs-ans:disabled { opacity: 1; cursor: default; }
+    .qs-ans.right { background: #19b37a; border-color: #7dffcf; box-shadow: 0 0 22px #19b37a; }
+    .qs-ans.wrong { background: #c2185b; border-color: #ff9db8; }
+    .qs-ans.dim { opacity: 0.35; }
+    .qs-flash {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 5;
+    }
+    .qs-flash.crit { background: radial-gradient(circle at 50% 35%, rgba(255, 255, 255, 0.95), rgba(255, 209, 102, 0.6) 40%, transparent 75%); animation: flash 0.55s ease-out; }
+    .qs-flash.hurt { background: radial-gradient(circle, transparent 35%, rgba(255, 30, 80, 0.55) 100%); animation: flash 0.6s ease-out; }
+    .qs-flash.heal { background: radial-gradient(circle, transparent 30%, rgba(80, 255, 170, 0.5) 100%); animation: flash 0.8s ease-out; }
+    @keyframes flash { 0% { opacity: 1; } 100% { opacity: 0; } }
+    .qs-crit {
+      position: absolute;
+      left: 50%;
+      top: 26%;
+      transform: translate(-50%, -50%);
+      font-size: clamp(2.6rem, 14vw, 4rem);
+      font-weight: 900;
+      font-style: italic;
+      letter-spacing: 0.02em;
+      color: #ffe066;
+      text-shadow: 0 0 18px #ffb300, 0 0 36px #ff4fa3, 0 4px 0 #7a1fff;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 6;
+      white-space: nowrap;
+    }
+    .qs-crit.show { animation: crit-pop 1s ease-out; }
+    @keyframes crit-pop {
+      0% { opacity: 0; transform: translate(-50%, -50%) scale(0.3) rotate(-8deg); }
+      25% { opacity: 1; transform: translate(-50%, -50%) scale(1.25) rotate(-4deg); }
+      70% { opacity: 1; transform: translate(-50%, -50%) scale(1) rotate(-4deg); }
+      100% { opacity: 0; transform: translate(-50%, -60%) scale(1) rotate(-4deg); }
+    }
+    .qs-potion-pop {
+      position: absolute;
+      left: 50%;
+      top: 45%;
+      transform: translate(-50%, -50%);
+      font-size: 5rem;
+      pointer-events: none;
+      opacity: 0;
+      z-index: 6;
+      filter: drop-shadow(0 0 20px #6dfcc0);
+    }
+    .qs-potion-pop.show { animation: potion-pop 1.3s ease-out; }
+    @keyframes potion-pop {
+      0% { opacity: 0; transform: translate(-50%, -30%) scale(0.4); }
+      25% { opacity: 1; transform: translate(-50%, -50%) scale(1.2); }
+      75% { opacity: 1; transform: translate(-50%, -55%) scale(1); }
+      100% { opacity: 0; transform: translate(-50%, -80%) scale(0.9); }
+    }
+    .qs-panel {
+      position: absolute;
+      inset: 0;
+      z-index: 8;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      padding: calc(20px + var(--safe-top)) 22px calc(20px + var(--safe-bottom));
+      background:
+        radial-gradient(circle at 50% 20%, rgba(255, 64, 160, 0.3), transparent 55%),
+        linear-gradient(180deg, #1a0b3a 0%, #0d0820 100%);
+      overflow-y: auto;
+    }
+    .qs-panel .art {
+      width: min(62vw, 34vh, 280px);
+      height: auto;
+      aspect-ratio: 1;
+      flex-shrink: 0;
+      border-radius: 28px;
+      object-fit: cover;
+      box-shadow: 0 0 0 3px rgba(255, 90, 200, 0.7), 0 0 34px rgba(200, 80, 255, 0.6);
+      animation: pop 0.5s ease;
+    }
+    .qs-panel h2 {
+      margin: 16px 0 6px;
+      font-size: clamp(1.7rem, 8vw, 2.2rem);
+      line-height: 1.15;
+      text-shadow: 0 0 14px rgba(255, 80, 200, 0.8);
+    }
+    .qs-panel p { margin: 0 0 6px; font-weight: 700; color: rgba(255, 255, 255, 0.85); line-height: 1.4; max-width: 360px; }
+    .qs-panel .primary, .qs-panel .secondary { max-width: 360px; }
+    .qs-panel .primary { background: linear-gradient(90deg, #ff2d6f, #c13cff); box-shadow: 0 6px 0 #6a1b9a, 0 0 24px rgba(255, 45, 111, 0.5); }
+    .qs-panel .secondary { background: rgba(255, 255, 255, 0.12); color: #fff; }
+    .qs-stars { font-size: 2.6rem; letter-spacing: 6px; margin: 2px 0 6px; }
+    .qs-stars span { color: rgba(255, 255, 255, 0.18); }
+    .qs-stars span.on { color: #ffd166; text-shadow: 0 0 14px #ffb300; animation: pop 0.5s ease both; }
+    .qs-stars span.on:nth-child(2) { animation-delay: 0.2s; }
+    .qs-stars span.on:nth-child(3) { animation-delay: 0.4s; }
+    .qs-sticker {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 6px 0 4px;
+      padding: 10px 14px;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.1);
+      text-align: left;
+      font-weight: 800;
+    }
+    .qs-sticker .badge { width: 58px; height: 58px; font-size: 1.6rem; border-radius: 16px; }
+    .qs-sticker small { display: block; font-weight: 700; color: rgba(255, 255, 255, 0.7); }
+    .qs-rules { list-style: none; padding: 0; margin: 4px 0 6px; text-align: left; font-weight: 700; line-height: 1.5; }
+    .qs-rules li { margin: 2px 0; }
+
+    /* ---------- Neon demon-hunter theme (whole app) ---------- */
+    :root {
+      --sun: #140b2e;
+      --sun-deep: rgba(255, 255, 255, 0.12);
+      --card: #24164d;
+      --ink: #ffffff;
+      --muted: #cbbcf2;
+      --coral: #ff2d6f;
+      --coral-dark: #9c1150;
+      --teal: #8b3dff;
+      --teal-dark: #5a1fb8;
+      --gold: #ffd166;
+      --violet: #4fe3ff;
+      --ok: #7dffcf;
+      --ok-bg: rgba(125, 255, 207, 0.12);
+      --soft: rgba(255, 255, 255, 0.1);
+      --miss: #ff9db8;
+      --shadow: 0 8px 28px rgba(0, 0, 0, 0.45);
+    }
+    html, body { background: #140b2e; }
+    body {
+      background:
+        radial-gradient(circle at 10% -5%, rgba(255, 45, 111, 0.32), transparent 42%),
+        radial-gradient(circle at 95% 8%, rgba(79, 227, 255, 0.22), transparent 40%),
+        linear-gradient(180deg, #1a0b3a 0%, #0d0820 100%) fixed;
+    }
+    .logo {
+      background: linear-gradient(135deg, #ff2d6f, #8b3dff);
+      box-shadow: 0 0 16px rgba(255, 45, 111, 0.6);
+    }
+    h1 { text-shadow: 0 0 12px rgba(255, 80, 200, 0.55); }
+    .icon-btn { color: #ffb3e6; }
+    .icon-btn:hover, .icon-btn:focus-visible { background: rgba(255, 255, 255, 0.1); }
+    .panel {
+      background: rgba(36, 22, 77, 0.85);
+      border: 1px solid rgba(255, 120, 220, 0.25);
+      box-shadow: 0 0 24px rgba(139, 61, 255, 0.25);
+    }
+    .chip, .choice {
+      background: rgba(255, 255, 255, 0.08);
+      border: 2px solid rgba(255, 255, 255, 0.14);
+      color: #fff;
+    }
+    .chip[aria-pressed="true"], .choice[aria-pressed="true"] {
+      background: linear-gradient(135deg, #ff2d6f, #8b3dff);
+      border-color: #ffb3e6;
+      color: #fff;
+      box-shadow: 0 0 14px rgba(255, 45, 111, 0.55);
+    }
+    .switch { background: rgba(255, 255, 255, 0.2); }
+    .switch[aria-pressed="true"] { background: #ff2d6f; box-shadow: 0 0 12px rgba(255, 45, 111, 0.6); }
+    .primary {
+      background: linear-gradient(90deg, #ff2d6f, #c13cff);
+      box-shadow: 0 6px 0 #6a1b9a, 0 0 22px rgba(255, 45, 111, 0.45);
+    }
+    .primary:active:not(:disabled) { box-shadow: 0 3px 0 #6a1b9a; }
+    .secondary { background: rgba(255, 255, 255, 0.12); color: #fff; }
+    .bar { background: rgba(255, 255, 255, 0.12); }
+    .bar > span { background: linear-gradient(90deg, #ff2d6f, #4fe3ff); box-shadow: 0 0 10px #ff2d6f; }
+    .card {
+      background: rgba(36, 22, 77, 0.92);
+      border: 2px solid rgba(255, 120, 220, 0.45);
+      box-shadow: 0 0 26px rgba(139, 61, 255, 0.35);
+      color: #fff;
+    }
+    .prompt { text-shadow: 0 0 14px rgba(120, 220, 255, 0.6); }
+    .typed.placeholder { color: rgba(255, 255, 255, 0.3); }
+    .answer { color: #7dffcf; }
+    .key {
+      background: rgba(255, 255, 255, 0.09);
+      border: 2px solid rgba(255, 255, 255, 0.12);
+      color: #fff;
+      box-shadow: none;
+    }
+    .key.wide-action { background: linear-gradient(135deg, #ff2d6f, #8b3dff); border-color: transparent; }
+    .key.back { background: rgba(255, 255, 255, 0.16); }
+    .key.ghost { border: 0; }
+    .pin-dots span { border-color: #ff2d6f; }
+    .pin-dots span.filled { background: #ff2d6f; box-shadow: 0 0 10px #ff2d6f; }
+    .score .big { text-shadow: 0 0 18px rgba(255, 80, 200, 0.7); }
+    .toast { background: #2d1b5e; color: #fff; border: 1px solid rgba(255, 120, 220, 0.5); }
+    .toast.streak { background: linear-gradient(90deg, #ff2d6f, #8b3dff); }
+    .sticker-card { background: rgba(36, 22, 77, 0.9); border: 1px solid rgba(255, 255, 255, 0.1); }
+    .badge.locked { background: rgba(255, 255, 255, 0.15) !important; }
+    .modal { background: rgba(5, 2, 15, 0.7); }
+    .modal-card { background: #24164d; color: #fff; border: 2px solid rgba(255, 120, 220, 0.5); box-shadow: 0 0 30px rgba(255, 45, 111, 0.4); }
+    .fc-screen { background: linear-gradient(180deg, #1a0b3a 0%, #0d0820 100%); }
+    .fc-exit { color: rgba(255, 255, 255, 0.4); }
+    .fc-front { box-shadow: 0 0 0 3px rgba(255, 120, 220, 0.6), 0 0 30px rgba(139, 61, 255, 0.5); }
+    .fc-back {
+      background: linear-gradient(160deg, #ff2d6f 0%, #8b3dff 100%);
+      box-shadow: 0 0 0 3px rgba(255, 179, 230, 0.7), 0 0 34px rgba(255, 45, 111, 0.55);
+    }
+    .fc-done { background: transparent; }
+    .fc-done h2 { text-shadow: 0 0 14px rgba(255, 80, 200, 0.8); }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fc-inner { transition-duration: 0.25s; }
+      .qs-demon img { animation: none; }
+    }
   </style>
 </head>
 <body>
@@ -588,13 +1137,25 @@
           <div class="chips" id="tableChips"></div>
         </div>
         <div class="row">
-          <p class="label">Mode</p>
-          <div class="choices">
-            <button type="button" class="choice" id="modeFlip" aria-pressed="true">Flip cards</button>
-            <button type="button" class="choice" id="modeType" aria-pressed="false">Type answer</button>
+          <p class="label">Math</p>
+          <div class="choices three">
+            <button type="button" class="choice" data-op="mul" aria-pressed="true">× Times</button>
+            <button type="button" class="choice" data-op="div" aria-pressed="false">÷ Divide</button>
+            <button type="button" class="choice" data-op="mix" aria-pressed="false">Mix</button>
           </div>
         </div>
         <div class="row">
+          <p class="label">Mode</p>
+          <div class="choices three">
+            <button type="button" class="choice" data-mode="flip" aria-pressed="true">Flip cards</button>
+            <button type="button" class="choice" data-mode="type" aria-pressed="false">Type answer</button>
+            <button type="button" class="choice" data-mode="quest" aria-pressed="false">⚔️ Quest</button>
+          </div>
+        </div>
+        <div class="row" id="roundNoteRow" hidden>
+          <p class="setup-note" id="roundNote"></p>
+        </div>
+        <div class="row" id="roundRow">
           <p class="label">Round</p>
           <div class="choices three">
             <button type="button" class="choice" data-round="10" aria-pressed="false">10</button>
@@ -629,10 +1190,6 @@
         </button>
         <p class="feedback" id="feedback" aria-live="polite"></p>
       </div>
-      <div id="flipActions" class="flip-actions" hidden>
-        <button type="button" class="primary try-again" id="againBtn">Practice again</button>
-        <button type="button" class="primary got-it" id="gotItBtn">Got it</button>
-      </div>
       <div id="keypad" class="keypad" hidden></div>
     </section>
 
@@ -663,6 +1220,77 @@
       <p id="cheerText"></p>
     </div>
   </div>
+  <div class="fc-screen" id="fcScreen" hidden>
+    <button type="button" class="fc-exit" id="fcExit" aria-label="Close flip cards">✕</button>
+    <button type="button" class="fc-card" id="fcCard" aria-label="Flash card. Tap to flip.">
+      <div class="fc-inner" id="fcInner">
+        <div class="fc-face fc-front" id="fcFront"></div>
+        <div class="fc-face fc-back" id="fcBackFace"></div>
+      </div>
+    </button>
+    <div class="fc-done" id="fcDone" hidden>
+      <h2>All 10 cards! ✨</h2>
+      <p>That's How It's Done.</p>
+      <button type="button" class="primary" id="fcAgain">Again?</button>
+      <button type="button" class="secondary" id="fcHome">Back</button>
+    </div>
+  </div>
+
+  <div class="qs" id="questScreen" hidden>
+    <div class="qs-wrap">
+      <div class="qs-top">
+        <div class="qs-hearts" id="qsHearts" aria-label="Hearts"></div>
+        <div class="qs-chain" id="qsChain" aria-label="Critical streak">
+          <i>⚡</i><i>⚡</i><i>⚡</i><b id="qsPotion" title="Healing potion">🧪</b>
+        </div>
+        <div class="qs-count" id="qsCount">1 / 10</div>
+        <button type="button" class="qs-exit" id="qsExit" aria-label="Leave quest">✕</button>
+      </div>
+      <div class="qs-arena">
+        <div class="qs-demon" id="qsDemon">
+          <img src="art/demon.webp" alt="Hushfang the Song Snatcher" width="512" height="512">
+          <div class="qs-dmg" id="qsDmg"></div>
+        </div>
+        <div class="qs-name">HUSHFANG · SONG SNATCHER</div>
+        <div class="qs-hp" aria-label="Demon health"><span id="qsHpBar"></span></div>
+      </div>
+      <div class="qs-qbox">
+        <img class="qs-hunter" src="art/hunter-face.webp" alt="" width="192" height="192">
+        <div class="qs-prompt" id="qsPrompt" aria-live="polite">7 × 8</div>
+      </div>
+      <div class="qs-timer" id="qsTimer" aria-hidden="true"><span></span></div>
+      <div class="qs-msg" id="qsMsg" aria-live="polite"></div>
+      <div class="qs-answers" id="qsAnswers"></div>
+    </div>
+    <div class="qs-flash" id="qsFlash"></div>
+    <div class="qs-crit" id="qsCrit">CRITICAL!</div>
+    <div class="qs-potion-pop" id="qsPotionPop">🧪</div>
+
+    <div class="qs-panel" id="qsIntro" hidden>
+      <img class="art" src="art/hunter.webp" alt="Poe the pop-star demon hunter" width="512" height="512">
+      <h2>Demon Hunter Quest</h2>
+      <p>Hushfang the Song Snatcher stole the music! Sing it back with math.</p>
+      <ul class="qs-rules">
+        <li>⚔️ Right answer = hit</li>
+        <li>⚡ Answer in 3 seconds = CRITICAL (double damage)</li>
+        <li>❤️ Wrong answer = the demon hits back</li>
+        <li>🧪 3 criticals in a row = healing potion</li>
+      </ul>
+      <button type="button" class="primary" id="qsGo">Let's hunt!</button>
+      <button type="button" class="secondary" id="qsIntroBack">Back</button>
+    </div>
+
+    <div class="qs-panel" id="qsEnd" hidden>
+      <img class="art" id="qsEndArt" src="art/demon-defeated.webp" alt="" width="512" height="512">
+      <h2 id="qsEndTitle">Demon defeated!</h2>
+      <div class="qs-stars" id="qsStars" aria-label="Stars"><span>★</span><span>★</span><span>★</span></div>
+      <p id="qsEndMsg"></p>
+      <div class="qs-sticker" id="qsSticker" hidden></div>
+      <button type="button" class="primary" id="qsRematch">Rematch!</button>
+      <button type="button" class="secondary" id="qsEndBack">Back</button>
+    </div>
+  </div>
+
   <div class="modal" id="unlockPop" role="dialog" aria-labelledby="unlockTitle">
     <div class="modal-card">
       <div class="modal-arts" id="unlockArts"></div>
@@ -681,7 +1309,7 @@
       const PIN_KEY = "poe-flashcards-pin-ok";
       const PIN_SALT = "poe-flashcards:";
       const PIN_HASH = "74987bbf53d9877a5251d673c0cf1e17ac1a632eeac72bd1498ce2819c0df9aa";
-      const DEFAULTS = { tables: [1,2,3,4,5,6,7,8,9,10], mode: "flip", round: 20, sound: false };
+      const DEFAULTS = { tables: [1,2,3,4,5,6,7,8,9,10], mode: "flip", op: "mul", round: 20, sound: false };
 
       // Easy config: add an artist with cheers (correct) and encouragements (misses).
       // Fan-voice song-title puns only. Never write messages as if the artists are speaking.
@@ -831,7 +1459,6 @@
       const revealed = $("revealed");
       const typedEl = $("typed");
       const feedback = $("feedback");
-      const flipActions = $("flipActions");
       const keypad = $("keypad");
       const progressBar = $("progressBar");
       const progressText = $("progressText");
@@ -870,7 +1497,8 @@
             : DEFAULTS.tables.slice();
           return {
             tables: tables.length ? [...new Set(tables)].sort((a, b) => a - b) : DEFAULTS.tables.slice(),
-            mode: raw.mode === "type" ? "type" : "flip",
+            mode: raw.mode === "type" || raw.mode === "quest" ? raw.mode : "flip",
+            op: raw.op === "div" || raw.op === "mix" ? raw.op : "mul",
             round: raw.round === 10 || raw.round === "all" ? raw.round : 20,
             sound: !!raw.sound
           };
@@ -915,9 +1543,14 @@
         localStorage.setItem(REWARDS_KEY, JSON.stringify(rewards));
       }
 
-      function factKey(card) { return card.a + "×" + card.b; }
-      function factLabel(card) { return card.a + " × " + card.b; }
-      function product(card) { return card.a * card.b; }
+      // A card is { a: table, b: 1-10, op: "mul" | "div" }.
+      // Division is the inverse of the table: (a × b) ÷ a = b, always a whole number.
+      function isDiv(card) { return card.op === "div"; }
+      function factKey(card) { return isDiv(card) ? (card.a * card.b) + "÷" + card.a : card.a + "×" + card.b; }
+      function factLabel(card) { return isDiv(card) ? (card.a * card.b) + " ÷ " + card.a : card.a + " × " + card.b; }
+      function answerOf(card) { return isDiv(card) ? card.b : card.a * card.b; }
+      function fullFact(card) { return factLabel(card) + " = " + answerOf(card); }
+      function sameFact(x, y) { return x.a === y.a && x.b === y.b && (x.op || "mul") === (y.op || "mul"); }
 
       function shuffle(list) {
         const arr = list.slice();
@@ -949,22 +1582,26 @@
         return STICKERS.find((s) => s.id === id);
       }
 
-      function buildFacts(tables) {
+      function buildFacts(tables, op) {
+        const mode = op || settings.op;
         const facts = [];
         tables.forEach((a) => {
-          for (let b = 1; b <= 10; b++) facts.push({ a: a, b: b });
+          for (let b = 1; b <= 10; b++) {
+            if (mode !== "div") facts.push({ a: a, b: b, op: "mul" });
+            if (mode !== "mul") facts.push({ a: a, b: b, op: "div" });
+          }
         });
         return facts;
       }
 
       function buildRound(sourceFacts, size) {
-        const pool = shuffle(sourceFacts.map((f) => ({ a: f.a, b: f.b, missed: false })));
+        const pool = shuffle(sourceFacts.map((f) => ({ a: f.a, b: f.b, op: f.op || "mul", missed: false })));
         if (size === "all" || pool.length <= size) return pool;
         return pool.slice(0, size);
       }
 
       function requeue(card) {
-        const copy = { a: card.a, b: card.b, missed: true };
+        const copy = { a: card.a, b: card.b, op: card.op || "mul", missed: true };
         if (queue.length === 0) {
           queue.push(copy);
           return;
@@ -986,7 +1623,7 @@
         backBtn.textContent = name === "stickers" ? "Back" : "Setup";
         if (name === "pin") subtitle.textContent = "Enter the secret code";
         if (name === "setup") subtitle.textContent = "Pick your tables and go";
-        if (name === "play") subtitle.textContent = settings.mode === "flip" ? "Flip cards" : "Type the answer";
+        if (name === "play") subtitle.textContent = "Type the answer";
         if (name === "end") subtitle.textContent = "Round complete";
         if (name === "stickers") subtitle.textContent = "My Stickers";
         if (name !== "pin" && name !== "stickers") lastScreen = name;
@@ -1013,8 +1650,18 @@
           });
           tableChips.appendChild(btn);
         }
-        $("modeFlip").setAttribute("aria-pressed", settings.mode === "flip" ? "true" : "false");
-        $("modeType").setAttribute("aria-pressed", settings.mode === "type" ? "true" : "false");
+        document.querySelectorAll("[data-mode]").forEach((btn) => {
+          btn.setAttribute("aria-pressed", btn.getAttribute("data-mode") === settings.mode ? "true" : "false");
+        });
+        document.querySelectorAll("[data-op]").forEach((btn) => {
+          btn.setAttribute("aria-pressed", btn.getAttribute("data-op") === settings.op ? "true" : "false");
+        });
+        $("roundRow").hidden = settings.mode !== "type";
+        $("roundNoteRow").hidden = settings.mode === "type";
+        $("roundNote").textContent = settings.mode === "quest"
+          ? "10-question boss battle. Beat the demon before it escapes!"
+          : "10 full-screen cards. Tap to flip, tap again for the next one.";
+        startBtn.textContent = settings.mode === "quest" ? "Start the quest" : settings.mode === "flip" ? "Start flip cards" : "Start practice";
         document.querySelectorAll("[data-round]").forEach((btn) => {
           const value = btn.getAttribute("data-round") === "all" ? "all" : Number(btn.getAttribute("data-round"));
           btn.setAttribute("aria-pressed", String(settings.round) === String(value) ? "true" : "false");
@@ -1024,8 +1671,12 @@
         startBtn.disabled = settings.tables.length === 0;
       }
 
-      $("modeFlip").addEventListener("click", () => { settings.mode = "flip"; saveSettings(); renderSetup(); });
-      $("modeType").addEventListener("click", () => { settings.mode = "type"; saveSettings(); renderSetup(); });
+      document.querySelectorAll("[data-mode]").forEach((btn) => {
+        btn.addEventListener("click", () => { settings.mode = btn.getAttribute("data-mode"); saveSettings(); renderSetup(); });
+      });
+      document.querySelectorAll("[data-op]").forEach((btn) => {
+        btn.addEventListener("click", () => { settings.op = btn.getAttribute("data-op"); saveSettings(); renderSetup(); });
+      });
       document.querySelectorAll("[data-round]").forEach((btn) => {
         btn.addEventListener("click", () => {
           settings.round = btn.getAttribute("data-round") === "all" ? "all" : Number(btn.getAttribute("data-round"));
@@ -1051,11 +1702,23 @@
         try {
           unlockAudio();
           const now = audioCtx.currentTime;
-          const notes = kind === "ok" ? [523.25, 659.25, 783.99] : kind === "unlock" ? [523.25, 659.25, 783.99, 1046.5] : [392.0, 329.63];
+          const TONES = {
+            ok: [523.25, 659.25, 783.99],
+            unlock: [523.25, 659.25, 783.99, 1046.5],
+            again: [392.0, 329.63],
+            hit: [659.25, 880.0],
+            crit: [783.99, 987.77, 1174.66, 1567.98],
+            hurt: [220.0, 174.61],
+            potion: [523.25, 783.99, 1046.5, 1318.51],
+            win: [523.25, 659.25, 783.99, 1046.5, 1318.51, 1567.98],
+            lose: [392.0, 349.23, 311.13, 261.63]
+          };
+          const notes = TONES[kind] || TONES.again;
+          const wave = kind === "crit" || kind === "hurt" ? "triangle" : "sine";
           notes.forEach((freq, i) => {
             const osc = audioCtx.createOscillator();
             const gain = audioCtx.createGain();
-            osc.type = "sine";
+            osc.type = wave;
             osc.frequency.value = freq;
             const start = now + i * 0.09;
             gain.gain.setValueAtTime(0.0001, start);
@@ -1103,22 +1766,12 @@
         promptEl.textContent = factLabel(current);
         revealed.hidden = true;
         revealed.textContent = "";
-        if (settings.mode === "flip") {
-          typedEl.hidden = true;
-          keypad.hidden = true;
-          flipActions.hidden = true;
-          cardHint.hidden = false;
-          cardHint.textContent = "Tap to see the answer";
-          flashCard.setAttribute("aria-disabled", "false");
-        } else {
-          typedEl.hidden = false;
-          typedEl.textContent = "?";
-          typedEl.classList.add("placeholder");
-          keypad.hidden = false;
-          flipActions.hidden = true;
-          cardHint.hidden = true;
-          flashCard.setAttribute("aria-disabled", "true");
-        }
+        typedEl.hidden = false;
+        typedEl.textContent = "?";
+        typedEl.classList.add("placeholder");
+        keypad.hidden = false;
+        cardHint.hidden = true;
+        flashCard.setAttribute("aria-disabled", "true");
         updateProgress();
       }
 
@@ -1129,8 +1782,8 @@
         currentStreak = 0;
         if (!current.missed) {
           current.missed = true;
-          if (!missedFacts.some((f) => f.a === current.a && f.b === current.b)) {
-            missedFacts.push({ a: current.a, b: current.b });
+          if (!missedFacts.some((f) => sameFact(f, current))) {
+            missedFacts.push({ a: current.a, b: current.b, op: current.op || "mul" });
           }
         }
       }
@@ -1176,7 +1829,7 @@
         if (rewards.totalCorrect >= 25) ids.push("correct-25");
         if (rewards.totalCorrect >= 50) ids.push("correct-50");
         if (rewards.totalCorrect >= 100) ids.push("correct-100");
-        if (tableMastered(current.a)) ids.push("table-" + current.a);
+        if (!isDiv(current) && tableMastered(current.a)) ids.push("table-" + current.a);
         saveRewards();
         return unlockIfNeeded(ids);
       }
@@ -1312,30 +1965,6 @@
         setTimeout(nextCard, extra ? 1400 : 1100);
       }
 
-      flashCard.addEventListener("click", () => {
-        if (settings.mode !== "flip" || !current || revealedOn || locked) return;
-        revealedOn = true;
-        revealed.hidden = false;
-        revealed.textContent = product(current);
-        cardHint.hidden = true;
-        flipActions.hidden = false;
-      });
-
-      $("gotItBtn").addEventListener("click", () => {
-        if (locked || !revealedOn) return;
-        locked = true;
-        playTone("ok");
-        afterCorrect();
-      });
-
-      $("againBtn").addEventListener("click", () => {
-        if (locked || !revealedOn) return;
-        locked = true;
-        playTone("again");
-        markMissed();
-        requeue(current);
-        afterMiss();
-      });
 
       function renderKeypad() {
         keypad.innerHTML = "";
@@ -1361,7 +1990,7 @@
       }
 
       function onKey(k) {
-        if (settings.mode !== "type" || locked || !current) return;
+        if (locked || !current) return;
         if (k === "back") {
           typed = typed.slice(0, -1);
         } else if (k === "go") {
@@ -1377,7 +2006,7 @@
       function checkTyped() {
         if (!typed) return;
         const value = Number(typed);
-        const answer = product(current);
+        const answer = answerOf(current);
         locked = true;
         if (value === answer) {
           playTone("ok");
@@ -1424,7 +2053,7 @@
             .sort((x, y) => (tally[factKey(y)] || 0) - (tally[factKey(x)] || 0) || x.a - y.a || x.b - y.b)
             .forEach((f) => {
               const li = document.createElement("li");
-              li.textContent = factLabel(f) + " = " + (f.a * f.b);
+              li.textContent = fullFact(f);
               list.appendChild(li);
             });
         }
@@ -1458,7 +2087,9 @@
 
       startBtn.addEventListener("click", () => {
         if (settings.sound) unlockAudio();
-        startRound(buildFacts(settings.tables));
+        if (settings.mode === "flip") startFlip();
+        else if (settings.mode === "quest") openQuest();
+        else startRound(buildFacts(settings.tables));
       });
       $("playAgainBtn").addEventListener("click", () => {
         startRound(buildFacts(settings.tables));
@@ -1474,6 +2105,402 @@
       stickersBtn.addEventListener("click", () => openStickers("setup"));
       $("setupStickersBtn").addEventListener("click", () => openStickers("setup"));
       $("endStickersBtn").addEventListener("click", () => openStickers("end"));
+
+      // ---------- Full-screen flip cards (memory drill, no score) ----------
+      const FLIP_COUNT = 10;
+      const fcScreen = $("fcScreen");
+      const fcCard = $("fcCard");
+      const fcInner = $("fcInner");
+      let fcDeck = [];
+      let fcIndex = 0;
+      let fcFlipped = false;
+
+      function factHtml(card, withAnswer) {
+        const esc = (t) => String(t);
+        return "<span>" + esc(factLabel(card)) + "</span>" + (withAnswer ? "<span>= " + esc(answerOf(card)) + "</span>" : "");
+      }
+
+      function showFlipCard(animateIn) {
+        const card = fcDeck[fcIndex];
+        fcInner.classList.add("no-anim");
+        fcCard.classList.remove("flipped");
+        fcFlipped = false;
+        $("fcFront").innerHTML = factHtml(card, false);
+        $("fcBackFace").innerHTML = factHtml(card, true);
+        void fcInner.offsetWidth;
+        fcInner.classList.remove("no-anim");
+        fcCard.setAttribute("aria-label", factLabel(card) + ". Tap to flip.");
+        if (animateIn) {
+          fcCard.classList.remove("deal");
+          void fcCard.offsetWidth;
+          fcCard.classList.add("deal");
+        }
+      }
+
+      function startFlip() {
+        const pool = shuffle(buildFacts(settings.tables));
+        fcDeck = [];
+        while (fcDeck.length < FLIP_COUNT && pool.length) fcDeck = fcDeck.concat(pool.slice(0, FLIP_COUNT - fcDeck.length));
+        if (!fcDeck.length) return;
+        fcIndex = 0;
+        $("fcDone").hidden = true;
+        fcCard.hidden = false;
+        fcScreen.hidden = false;
+        document.body.style.overflow = "hidden";
+        showFlipCard(true);
+      }
+
+      function closeFlip() {
+        fcScreen.hidden = true;
+        document.body.style.overflow = "";
+        showScreen("setup");
+      }
+
+      fcCard.addEventListener("click", () => {
+        if (!fcFlipped) {
+          fcFlipped = true;
+          fcCard.classList.add("flipped");
+          fcCard.setAttribute("aria-label", fullFact(fcDeck[fcIndex]) + ". Tap for the next card.");
+          return;
+        }
+        fcIndex += 1;
+        if (fcIndex >= fcDeck.length) {
+          fcCard.hidden = true;
+          $("fcDone").hidden = false;
+          return;
+        }
+        showFlipCard(true);
+      });
+      $("fcExit").addEventListener("click", closeFlip);
+      $("fcHome").addEventListener("click", closeFlip);
+      $("fcAgain").addEventListener("click", startFlip);
+
+      // ---------- Demon Hunter Quest ----------
+      const QUEST_LEN = 10;
+      const DEMON_HP = 8;       // about 8 normal hits; a critical does 2
+      const MAX_HEARTS = 3;
+      const CRIT_MS = 3000;
+      const questScreen = $("questScreen");
+      const QUEST_CHEERS = [
+        "Takedown! Right on the beat!",
+        "Golden hit! The music is coming back!",
+        "How It's Done! Huntrix-level focus!",
+        "Soda Pop fizz — that one stung!",
+        "Touch! Direct hit!",
+        "Gnarly hit! Keep singing!",
+        "Best Hit Ever!",
+        "Live While We're Young — hit him again!"
+      ];
+      const CRIT_CHEERS = [
+        "CRITICAL HIT! That's How It's Done!",
+        "CRITICAL! Golden voice, double damage!",
+        "CRITICAL! What a Takedown!",
+        "CRITICAL! Faster than a Soda Pop fizz!"
+      ];
+      let qs = null;
+      let qTimers = [];
+
+      function later(fn, ms) { qTimers.push(setTimeout(fn, ms)); }
+      function clearQuestTimers() { qTimers.forEach(clearTimeout); qTimers = []; }
+
+      function retrigger(el, cls) {
+        el.classList.remove(cls);
+        void el.offsetWidth;
+        el.classList.add(cls);
+      }
+
+      function choicesFor(card) {
+        const ans = answerOf(card);
+        let near;
+        let far;
+        if (isDiv(card)) {
+          near = [ans + 1, ans - 1, ans + 2, ans - 2];
+          far = [ans + 3, ans - 3, card.a, ans + 4];
+        } else {
+          const a = card.a;
+          const b = card.b;
+          near = [a * (b + 1), a * (b - 1), (a + 1) * b, (a - 1) * b];
+          far = [ans + 1, ans - 1, ans + 2, ans - 2, a * (b + 2), a * (b - 2), ans + 10, ans - 10];
+        }
+        const picked = [];
+        const ok = (n) => Number.isInteger(n) && n > 0 && n !== ans && picked.indexOf(n) === -1;
+        shuffle(near).forEach((n) => { if (picked.length < 3 && ok(n)) picked.push(n); });
+        shuffle(far).forEach((n) => { if (picked.length < 3 && ok(n)) picked.push(n); });
+        for (let k = 1; picked.length < 3; k++) { if (ok(ans + k)) picked.push(ans + k); }
+        return shuffle(picked.concat([ans]));
+      }
+
+      function renderHearts(popIndex) {
+        const box = $("qsHearts");
+        box.innerHTML = "";
+        for (let i = 0; i < MAX_HEARTS; i++) {
+          const h = document.createElement("span");
+          h.textContent = "❤️";
+          if (i >= qs.hearts) h.classList.add("lost");
+          if (i === popIndex) h.classList.add("pop");
+          box.appendChild(h);
+        }
+        box.setAttribute("aria-label", qs.hearts + " of " + MAX_HEARTS + " hearts");
+      }
+
+      function renderChain() {
+        $("qsChain").querySelectorAll("i").forEach((el, i) => el.classList.toggle("on", i < qs.critChain));
+        const potion = $("qsPotion");
+        potion.classList.toggle("have", qs.potions > 0);
+        potion.title = qs.potions > 0 ? "Potion saved! It heals you next time you get hit." : "3 criticals in a row = healing potion";
+      }
+
+      function renderHp() {
+        $("qsHpBar").style.width = Math.max(0, (qs.hp / DEMON_HP) * 100) + "%";
+      }
+
+      function setMsg(text, kind) {
+        const m = $("qsMsg");
+        m.textContent = text || "";
+        m.className = "qs-msg" + (kind ? " " + kind : "");
+      }
+
+      function openQuest() {
+        clearQuestTimers();
+        questScreen.hidden = false;
+        document.body.style.overflow = "hidden";
+        $("qsEnd").hidden = true;
+        $("qsIntro").hidden = false;
+      }
+
+      function closeQuest() {
+        clearQuestTimers();
+        qs = null;
+        questScreen.hidden = true;
+        document.body.style.overflow = "";
+        showScreen("setup");
+      }
+
+      function startQuest() {
+        clearQuestTimers();
+        if (settings.sound) unlockAudio();
+        const pool = shuffle(buildFacts(settings.tables));
+        let questions = [];
+        while (questions.length < QUEST_LEN && pool.length) questions = questions.concat(pool.slice(0, QUEST_LEN - questions.length));
+        qs = { questions: questions, i: 0, hp: DEMON_HP, hearts: MAX_HEARTS, potions: 0, critChain: 0, correct: 0, answered: 0, crits: 0, locked: true, startT: 0, over: false };
+        $("qsIntro").hidden = true;
+        $("qsEnd").hidden = true;
+        $("qsDemon").className = "qs-demon";
+        renderHearts();
+        renderChain();
+        renderHp();
+        setMsg("");
+        askQuestion();
+      }
+
+      function askQuestion() {
+        if (!qs || qs.over) return;
+        if (qs.i >= qs.questions.length) {
+          endQuest(qs.hp <= 0);
+          return;
+        }
+        const card = qs.questions[qs.i];
+        $("qsCount").textContent = (qs.i + 1) + " / " + qs.questions.length;
+        $("qsPrompt").textContent = factLabel(card);
+        retrigger($("qsPrompt"), "celebrate");
+        const box = $("qsAnswers");
+        box.innerHTML = "";
+        choicesFor(card).forEach((n) => {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "qs-ans";
+          btn.textContent = n;
+          btn.addEventListener("click", () => onQuestAnswer(n, btn));
+          box.appendChild(btn);
+        });
+        const timer = $("qsTimer");
+        timer.classList.remove("run", "expired");
+        void timer.offsetWidth;
+        timer.classList.add("run");
+        later(() => timer.classList.add("expired"), CRIT_MS);
+        qs.startT = performance.now();
+        qs.locked = false;
+      }
+
+      function onQuestAnswer(value, btn) {
+        if (!qs || qs.locked || qs.over) return;
+        qs.locked = true;
+        const elapsed = performance.now() - qs.startT;
+        const card = qs.questions[qs.i];
+        const ans = answerOf(card);
+        const buttons = Array.from($("qsAnswers").children);
+        buttons.forEach((b) => { b.disabled = true; });
+        const timer = $("qsTimer");
+        timer.classList.remove("run");
+        timer.classList.add("expired");
+        qs.answered += 1;
+        const demon = $("qsDemon");
+        let wait = 1000;
+
+        if (value === ans) {
+          const crit = elapsed <= CRIT_MS;
+          const dmg = crit ? 2 : 1;
+          qs.correct += 1;
+          qs.hp = Math.max(0, qs.hp - dmg);
+          btn.classList.add("right");
+          buttons.forEach((b) => { if (b !== btn) b.classList.add("dim"); });
+          const dmgEl = $("qsDmg");
+          dmgEl.textContent = "-" + dmg;
+          dmgEl.classList.toggle("big", crit);
+          retrigger(dmgEl, "show");
+          demon.classList.remove("hit", "crit", "attack");
+          void demon.offsetWidth;
+          demon.classList.add(crit ? "crit" : "hit");
+          renderHp();
+          if (crit) {
+            qs.crits += 1;
+            qs.critChain += 1;
+            $("qsFlash").className = "qs-flash";
+            retrigger($("qsFlash"), "crit");
+            retrigger($("qsCrit"), "show");
+            playTone("crit");
+            setMsg(pick(CRIT_CHEERS), "crit");
+            wait = 1250;
+            if (qs.critChain >= 3) {
+              qs.critChain = 0;
+              later(() => earnPotion(), 650);
+              wait = 1900;
+            }
+          } else {
+            qs.critChain = 0;
+            playTone("hit");
+            setMsg(pick(QUEST_CHEERS), "good");
+          }
+          renderChain();
+          if (qs.hp <= 0) {
+            later(() => endQuest(true), 900);
+            return;
+          }
+        } else {
+          qs.critChain = 0;
+          qs.hearts -= 1;
+          btn.classList.add("wrong");
+          buttons.forEach((b) => {
+            if (Number(b.textContent) === ans) b.classList.add("right");
+            else if (b !== btn) b.classList.add("dim");
+          });
+          demon.classList.remove("hit", "crit", "attack");
+          void demon.offsetWidth;
+          demon.classList.add("attack");
+          $("qsFlash").className = "qs-flash";
+          retrigger($("qsFlash"), "hurt");
+          retrigger(questScreen, "hurt");
+          playTone("hurt");
+          renderHearts(qs.hearts);
+          renderChain();
+          const key = factKey(card);
+          tally[key] = (tally[key] || 0) + 1;
+          saveTally();
+          let line = "The demon hits back! " + fullFact(card);
+          if (qs.potions > 0 && qs.hearts < MAX_HEARTS) {
+            qs.potions -= 1;
+            later(() => {
+              if (!qs) return;
+              qs.hearts = Math.min(MAX_HEARTS, qs.hearts + 1);
+              renderHearts(qs.hearts - 1);
+              renderChain();
+              retrigger($("qsPotionPop"), "show");
+              $("qsFlash").className = "qs-flash";
+              retrigger($("qsFlash"), "heal");
+              playTone("potion");
+              setMsg("You drank your potion! +1 ❤️  " + fullFact(card), "good");
+            }, 700);
+          } else if (qs.hearts <= 0) {
+            setMsg(line, "bad");
+            later(() => endQuest(false), 1800);
+            return;
+          }
+          setMsg(line, "bad");
+          wait = 2000;
+        }
+        qs.i += 1;
+        later(askQuestion, wait);
+      }
+
+      function earnPotion() {
+        if (!qs || qs.over) return;
+        retrigger($("qsPotionPop"), "show");
+        $("qsFlash").className = "qs-flash";
+        retrigger($("qsFlash"), "heal");
+        playTone("potion");
+        if (qs.hearts < MAX_HEARTS) {
+          qs.hearts += 1;
+          renderHearts(qs.hearts - 1);
+          setMsg("3 criticals in a row! Healing potion: +1 ❤️", "good");
+        } else {
+          qs.potions = 1;
+          setMsg("3 criticals! Potion saved — it heals you if you get hit.", "good");
+        }
+        renderChain();
+      }
+
+      function awardQuestSticker() {
+        const pool = STICKERS.filter((st) => st.id.indexOf("table-") !== 0 && !rewards.unlocked[st.id]);
+        if (!pool.length) return null;
+        const st = pick(pool);
+        unlockIfNeeded([st.id]);
+        return st;
+      }
+
+      function endQuest(won) {
+        if (!qs || qs.over) return;
+        qs.over = true;
+        qs.locked = true;
+        clearQuestTimers();
+        const panel = $("qsEnd");
+        const stickerBox = $("qsSticker");
+        stickerBox.hidden = true;
+        stickerBox.innerHTML = "";
+        if (won) {
+          $("qsDemon").classList.add("defeated");
+          playTone("win");
+          const accuracy = qs.answered ? qs.correct / qs.answered : 0;
+          const stars = accuracy >= 0.9 ? 3 : accuracy >= 0.7 ? 2 : 1;
+          const st = awardQuestSticker();
+          later(() => {
+            $("qsEndArt").src = "art/demon-defeated.webp";
+            $("qsEndArt").alt = "Hushfang defeated, the music is free";
+            $("qsEndTitle").textContent = "Demon defeated! 🎤";
+            $("qsStars").hidden = false;
+            $("qsStars").querySelectorAll("span").forEach((el, i) => el.classList.toggle("on", i < stars));
+            $("qsStars").setAttribute("aria-label", stars + " of 3 stars");
+            $("qsEndMsg").textContent = "The music is back! " + qs.correct + " of " + qs.answered + " right, " + qs.crits + " critical hit" + (qs.crits === 1 ? "" : "s") + ". Golden!";
+            if (st) {
+              stickerBox.appendChild(makeBadge(st, false));
+              const t = document.createElement("div");
+              t.innerHTML = "<small>New sticker!</small>";
+              t.appendChild(document.createTextNode(st.name));
+              stickerBox.appendChild(t);
+              stickerBox.hidden = false;
+            }
+            $("qsRematch").textContent = "Hunt again!";
+            panel.hidden = false;
+            burstConfetti();
+          }, 950);
+        } else {
+          playTone("lose");
+          later(() => {
+            $("qsEndArt").src = "art/demon.webp";
+            $("qsEndArt").alt = "Hushfang the Song Snatcher";
+            $("qsEndTitle").textContent = "The demon escaped!";
+            $("qsStars").hidden = true;
+            $("qsEndMsg").textContent = "Hushfang got away with the music this time. Try again? You've got this.";
+            $("qsRematch").textContent = "Rematch!";
+            panel.hidden = false;
+          }, 600);
+        }
+      }
+
+      $("qsGo").addEventListener("click", startQuest);
+      $("qsRematch").addEventListener("click", startQuest);
+      $("qsIntroBack").addEventListener("click", closeQuest);
+      $("qsEndBack").addEventListener("click", closeQuest);
+      $("qsExit").addEventListener("click", closeQuest);
 
       async function hashPin(pin) {
         const data = new TextEncoder().encode(PIN_SALT + pin);

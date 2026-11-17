@@ -1,11 +1,15 @@
-const CACHE = "poe-flashcards-v3";
+const CACHE = "poe-flashcards-v4";
 const ASSETS = [
   "./",
   "./index.html",
   "./manifest.webmanifest",
   "./icon-192.png",
   "./icon-512.png",
-  "./icon-512-maskable.png"
+  "./icon-512-maskable.png",
+  "./art/demon.webp",
+  "./art/hunter.webp",
+  "./art/hunter-face.webp",
+  "./art/demon-defeated.webp"
 ];
 
 self.addEventListener("install", (event) => {
